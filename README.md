@@ -4,7 +4,7 @@
 
 It is designed to record the trace of an AI search without storing the raw query, raw answer, full browsing history, raw source content, or personal identifiers.
 
-The goal is to make AI search auditable, accountable, and compatible with future attribution, memory, rumination, contribution analysis, and royalty systems without turning search history into surveillance infrastructure.
+The goal is to make AI search auditable, accountable, and compatible with future attribution, memory, rumination, contribution analysis, value-circulation review, and royalty systems without turning search history into surveillance infrastructure.
 
 ---
 
@@ -21,6 +21,7 @@ This standard records minimized, encoded, non-reversible signals such as:
 * Source interaction signals
 * Contribution graph signals
 * Royalty hook signals
+* Unified trace receipt bindings
 * Sampling flags
 * Intent codes
 * Transformation codes
@@ -29,6 +30,8 @@ This standard records minimized, encoded, non-reversible signals such as:
 * User action signals
 * Privacy boundaries
 * Integrity hashes
+* Module references
+* Verification status
 
 It does not record:
 
@@ -44,6 +47,7 @@ It does not record:
 * Payment decisions
 * Legal attribution decisions
 * Ownership assignments
+* Automatic execution authorization
 
 The principle is simple:
 
@@ -52,6 +56,7 @@ The principle is simple:
 > Record how the source was touched, not the source itself.
 > Record contribution structure, not ownership or payment.
 > Connect to value circulation, but do not calculate royalties.
+> Bind the trace modules, but do not collapse the boundaries.
 
 ---
 
@@ -67,7 +72,7 @@ This creates a new problem:
 
 This standard answers that question by defining minimized trace receipts and modular trace structures.
 
-Instead of preserving the entire search session, it preserves only the structural evidence needed for later audit, attribution analysis, reflection, contribution review, or value circulation.
+Instead of preserving the entire search session, it preserves only the structural evidence needed for later audit, attribution analysis, reflection, contribution review, value-circulation review, or governance workflows.
 
 ---
 
@@ -98,7 +103,7 @@ This separation keeps the search layer simple, testable, and independently exten
 Current candidate version:
 
 ```text
-v0.4.0-candidate
+v0.5.0-candidate
 ```
 
 Current module versions:
@@ -107,6 +112,7 @@ Current module versions:
 AI Search Trace Receipt: 0.2.0
 Source Contribution Graph: 0.3.0
 Royalty Hook: 0.4.0
+Unified Trace Receipt: 0.5.0
 ```
 
 ---
@@ -118,6 +124,7 @@ v0.1: AI Search Trace Receipt
 v0.2: Source Interaction Trace
 v0.3: Source Contribution Graph
 v0.4: Royalty Hook
+v0.5: Unified Trace Receipt
 ```
 
 ### v0.1: AI Search Trace Receipt
@@ -198,6 +205,31 @@ It adds:
 
 The goal is to support controlled value-circulation review without calculating royalties, deciding payment, assigning ownership, or determining legal attribution.
 
+### v0.5: Unified Trace Receipt
+
+Version 0.5 adds **Unified Trace Receipt** as an independent module.
+
+Version 0.5 binds independently validated modules into one verifiable envelope.
+
+It links:
+
+* AI Search Trace Receipt
+* Source Contribution Graph
+* Royalty Hook
+
+It adds:
+
+* Unified receipt identity
+* Module references
+* Module relationships
+* Event binding metadata
+* Boundary preservation declarations
+* Unified policy boundary
+* Verification status
+* Integrity chain
+
+The goal is to show which modules belong together while preserving module boundaries and preventing raw content capture, automatic payment, legal attribution, or ownership assignment.
+
 ---
 
 ## Modular Schema Design
@@ -206,7 +238,7 @@ Starting with v0.3, larger extension layers are defined as separate schemas.
 
 The main AI Search Trace Receipt schema acts as a receipt envelope.
 
-Specialized structures such as Source Contribution Graph and Royalty Hook are validated as independent modules.
+Specialized structures such as Source Contribution Graph, Royalty Hook, and Unified Trace Receipt are validated as independent modules.
 
 This keeps the core receipt small, stable, and extensible.
 
@@ -217,12 +249,14 @@ AI Search Trace Receipt Standard
 │
 ├─ Independent modules
 │  ├─ schemas/source-contribution-graph.schema.json
-│  └─ schemas/royalty-hook.schema.json
+│  ├─ schemas/royalty-hook.schema.json
+│  └─ schemas/unified-trace-receipt.schema.json
 │
 ├─ Examples
 │  ├─ examples/ai-search-trace-receipt.example.yaml
 │  ├─ examples/source-contribution-graph.example.yaml
-│  └─ examples/royalty-hook.example.yaml
+│  ├─ examples/royalty-hook.example.yaml
+│  └─ examples/unified-trace-receipt.example.yaml
 │
 └─ Documentation
    ├─ docs/ai-search-trace-receipt.md
@@ -230,7 +264,8 @@ AI Search Trace Receipt Standard
    ├─ docs/privacy-boundary.md
    ├─ docs/source-interaction-trace.md
    ├─ docs/source-contribution-graph.md
-   └─ docs/royalty-hook.md
+   ├─ docs/royalty-hook.md
+   └─ docs/unified-trace-receipt.md
 ```
 
 The design shift is:
@@ -241,52 +276,58 @@ v0.1 / v0.2:
 
 v0.3 and later:
   Define larger structures as independent modules.
+
+v0.5:
+  Bind independent modules through a unified envelope.
 ```
 
 This prevents the main receipt schema from becoming too large.
 
 The receipt remains the envelope.
 
-The modules become attached structural evidence and controlled connection layers.
+The modules remain independently validated.
+
+The unified receipt binds the modules without collapsing their boundaries.
 
 ---
 
-## v0.4 Scope
+## v0.5 Scope
 
-Version 0.4 defines a Royalty Hook for AI-mediated search contribution structures.
+Version 0.5 defines a Unified Trace Receipt for AI-mediated search trace modules.
 
 It covers:
 
-* Royalty hook identity
-* Hook type
+* Unified receipt identity
+* Receipt type
+* AI Search Trace Receipt reference
 * Source Contribution Graph reference
-* Eligibility for review
-* Eligibility for royalty analysis
-* Eligibility for public attribution review
-* Confidence level
-* Human review requirement
-* Review reason
-* Review status
-* Allowed downstream use
-* Prohibited downstream use
-* Policy boundary
-* Optional hook integrity metadata
+* Royalty Hook reference
+* Module relationship type
+* Linkage status
+* Event binding metadata
+* Boundary preservation declarations
+* Unified policy boundary
+* Verification status
+* Integrity chain
+* Module hash bundle
 
 It does not define:
 
-* Royalty distribution
+* Raw search history archive
+* Raw content capture
+* Full browsing reconstruction
 * Payment allocation
 * Automatic payment
+* Royalty calculation
 * Legal attribution
 * Copyright compliance
 * Ownership claims
 * Contract execution
 * Creator identity resolution
 * Payout identity mapping
-* Full provenance reconstruction
 * Model-internal attention graphs
 * Training data lineage
-* Unified trace receipts
+* Complete AI governance framework
 
 These are reserved for later versions or downstream systems.
 
@@ -304,7 +345,8 @@ AI Search Event
             → Source Interaction Trace
               → Source Contribution Graph
                 → Royalty Hook
-                  → Human Review / Policy Engine / Royalty Analysis
+                  → Unified Trace Receipt
+                    → Verification / Review / Governance
 ```
 
 Or, more simply:
@@ -318,8 +360,9 @@ Search
           → Record source interaction
             → Map contribution structure
               → Connect to value-circulation review
-                → Preserve boundaries
-                  → Verify
+                → Bind module references
+                  → Preserve boundaries
+                    → Verify
 ```
 
 ---
@@ -347,6 +390,10 @@ For example:
 | Downstream use category   | `allowed_downstream_use`    |
 | Prohibited downstream use | `prohibited_downstream_use` |
 | Review status             | `review_status`             |
+| Module relationship       | `relationship_type`         |
+| Linkage status            | `linkage_status`            |
+| Binding method            | `binding_method`            |
+| Verification level        | `verification_level`        |
 | AI transformation         | `transformation_code`       |
 | Confidence range          | `confidence_bucket`         |
 | User reaction             | `action_code`               |
@@ -667,11 +714,6 @@ policy_boundary:
   raw_content_stored: false
   raw_query_stored: false
   raw_answer_stored: false
-
-integrity:
-  hook_hash: "sha256:7bd91ac44f"
-  source_graph_hash: "sha256:91bc3a7d9e"
-  previous_hook_hash: "sha256:3fa12bc980"
 ```
 
 This records:
@@ -792,23 +834,210 @@ This keeps the hook as a safe connection layer rather than a payment engine, leg
 
 ---
 
+## Unified Trace Receipt
+
+Unified Trace Receipt is the main addition in v0.5.
+
+It binds independently validated trace modules into one verifiable envelope.
+
+It is defined as an independent module:
+
+```text
+schemas/unified-trace-receipt.schema.json
+```
+
+Unified Trace Receipt binds:
+
+* AI Search Trace Receipt
+* Source Contribution Graph
+* Royalty Hook
+
+It does not merge raw records.
+
+It does not collapse module boundaries.
+
+It does not store raw queries, raw answers, or raw source content.
+
+It does not calculate royalties, execute payment, decide legal attribution, or assign ownership.
+
+Example:
+
+```yaml
+schema_version: "0.5.0"
+unified_receipt_id: "utr_20260620_a13f"
+receipt_type: "ai_search_unified_trace"
+
+module_refs:
+  ai_search_trace_receipt:
+    trace_id: "trace_20260620_a13f"
+    receipt_hash: "sha256:abc123def456"
+    schema_version: "0.2.0"
+
+  source_contribution_graph:
+    graph_id: "graph_20260620_a13f"
+    graph_hash: "sha256:91bc3a7d9e"
+    schema_version: "0.3.0"
+
+  royalty_hook:
+    hook_id: "royalty_hook_20260620_a13f"
+    hook_hash: "sha256:7bd91ac44f"
+    schema_version: "0.4.0"
+
+module_relationships:
+  relationship_type: "search_to_contribution_to_royalty_hook"
+  linkage_status: "linked"
+
+  event_binding:
+    shared_event_fingerprint: "event_hash:20260620_a13f"
+    binding_method: "hash_chain"
+    binding_confidence: "high"
+
+  boundary_preservation:
+    modules_remain_separate: true
+    raw_content_not_merged: true
+    payment_not_executed: true
+    legal_attribution_not_decided: true
+    ownership_not_assigned: true
+
+unified_policy_boundary:
+  raw_query_stored: false
+  raw_answer_stored: false
+  raw_source_content_stored: false
+  personal_id_linked: false
+  payment_decision_included: false
+  legal_attribution_included: false
+  ownership_decision_included: false
+  automatic_execution_allowed: false
+
+verification_status:
+  receipt_verified: true
+  module_refs_verified: true
+  integrity_chain_verified: true
+  verification_level: "module_hashes_checked"
+
+integrity_chain:
+  unified_receipt_hash: "sha256:utr91bc3a7d9e"
+  previous_unified_receipt_hash: "sha256:utr44af09c81b"
+  module_hashes:
+    ai_search_trace_receipt_hash: "sha256:abc123def456"
+    source_contribution_graph_hash: "sha256:91bc3a7d9e"
+    royalty_hook_hash: "sha256:7bd91ac44f"
+  chain_method: "explicit_hash_bundle"
+```
+
+This records:
+
+```text
+An AI Search Trace Receipt is linked to a Source Contribution Graph.
+The Source Contribution Graph is linked to a Royalty Hook.
+The module references were verified.
+The modules remain separate.
+Raw content was not merged.
+Payment was not executed.
+Legal attribution was not decided.
+Ownership was not assigned.
+```
+
+### Receipt Types
+
+Initial `receipt_type` values:
+
+```text
+ai_search_unified_trace
+search_contribution_royalty_bundle
+audit_bundle
+review_bundle
+mixed
+unknown
+```
+
+### Relationship Types
+
+Initial `relationship_type` values:
+
+```text
+search_to_contribution_to_royalty_hook
+search_to_contribution
+contribution_to_royalty_hook
+audit_bundle
+review_bundle
+mixed
+unknown
+```
+
+### Linkage Status
+
+Initial `linkage_status` values:
+
+```text
+linked
+partially_linked
+pending_review
+broken
+unknown
+```
+
+### Binding Methods
+
+Initial `binding_method` values:
+
+```text
+hash_chain
+explicit_reference
+timestamp_bucket
+shared_trace_id
+mixed
+unknown
+```
+
+### Boundary Preservation
+
+Every valid Unified Trace Receipt must declare:
+
+```yaml
+modules_remain_separate: true
+raw_content_not_merged: true
+payment_not_executed: true
+legal_attribution_not_decided: true
+ownership_not_assigned: true
+```
+
+### Unified Policy Boundary
+
+Every valid Unified Trace Receipt must also declare:
+
+```yaml
+raw_query_stored: false
+raw_answer_stored: false
+raw_source_content_stored: false
+personal_id_linked: false
+payment_decision_included: false
+legal_attribution_included: false
+ownership_decision_included: false
+automatic_execution_allowed: false
+```
+
+This keeps the unified receipt as a binding envelope rather than a surveillance log, payment engine, legal attribution system, or ownership ledger.
+
+---
+
 ## Design Principles
 
 ### 1. No Raw Query Storage
 
-The raw user query must not be stored inside the receipt, contribution graph, or royalty hook.
+The raw user query must not be stored inside the receipt, contribution graph, royalty hook, or unified receipt.
 
 Only a non-reversible fingerprint, intent code, or minimized signal may be recorded.
 
 ### 2. No Raw Answer Storage
 
-The raw AI answer must not be stored inside the receipt, contribution graph, or royalty hook.
+The raw AI answer must not be stored inside the receipt, contribution graph, royalty hook, or unified receipt.
 
 Only a digest, hash, confidence bucket, transformation code, or component digest may be recorded.
 
 ### 3. No Raw Source Content Storage
 
-Raw source content must not be stored inside the receipt, graph, or hook.
+Raw source content must not be stored inside the receipt, graph, hook, or unified receipt.
 
 Source Interaction Trace records how a source was touched.
 
@@ -816,11 +1045,13 @@ Source Contribution Graph records how a source structurally related to answer co
 
 Royalty Hook records how that graph may be passed downstream.
 
+Unified Trace Receipt records how these modules are bound.
+
 None of them records the source itself.
 
 ### 4. No Personal ID Linkage
 
-Trace receipts, contribution graphs, and royalty hooks must not be directly linked to personal identifiers.
+Trace receipts, contribution graphs, royalty hooks, and unified receipts must not be directly linked to personal identifiers.
 
 The standard is designed for structural evidence, not behavioral surveillance.
 
@@ -854,6 +1085,10 @@ Examples include:
 * `allowed_downstream_use`
 * `prohibited_downstream_use`
 * `review_status`
+* `relationship_type`
+* `linkage_status`
+* `binding_method`
+* `verification_level`
 * `transformation_code`
 * `confidence_bucket`
 * `action_code`
@@ -903,11 +1138,24 @@ raw_query_stored: false
 raw_answer_stored: false
 ```
 
+Unified trace receipts require:
+
+```yaml
+raw_query_stored: false
+raw_answer_stored: false
+raw_source_content_stored: false
+personal_id_linked: false
+payment_decision_included: false
+legal_attribution_included: false
+ownership_decision_included: false
+automatic_execution_allowed: false
+```
+
 These fields define the boundary between a trace system and surveillance, payment automation, or legal judgment.
 
 ### 8. Hash-Based Integrity
 
-Each receipt, graph, or hook may include integrity hashes such as:
+Each receipt, graph, hook, or unified receipt may include integrity hashes such as:
 
 * `receipt_hash`
 * `previous_receipt_hash`
@@ -915,6 +1163,8 @@ Each receipt, graph, or hook may include integrity hashes such as:
 * `previous_graph_hash`
 * `hook_hash`
 * `previous_hook_hash`
+* `unified_receipt_hash`
+* `previous_unified_receipt_hash`
 * `signature`
 
 This allows later verification without preserving raw content.
@@ -932,7 +1182,23 @@ human_review_required_before_payment: true
 
 This means downstream systems may analyze contribution evidence, but payment requires a separate review process.
 
-### 10. Optional Future Hooks
+### 10. Module Binding Without Boundary Collapse
+
+Unified Trace Receipt binds modules through identifiers, hashes, relationships, and verification metadata.
+
+It must not copy all module content into one large raw record.
+
+The following boundary must hold:
+
+```yaml
+modules_remain_separate: true
+raw_content_not_merged: true
+payment_not_executed: true
+legal_attribution_not_decided: true
+ownership_not_assigned: true
+```
+
+### 11. Optional Future Hooks
 
 The standard keeps optional hooks for future systems:
 
@@ -940,6 +1206,7 @@ The standard keeps optional hooks for future systems:
 * Memory hook
 * Rumination hook
 * Human review requirement
+* Unified trace receipt
 
 These hooks remain intentionally bounded until later versions define their full semantics.
 
@@ -957,15 +1224,18 @@ ai-search-trace-receipt-standard/
 │  ├─ privacy-boundary.md
 │  ├─ source-interaction-trace.md
 │  ├─ source-contribution-graph.md
-│  └─ royalty-hook.md
+│  ├─ royalty-hook.md
+│  └─ unified-trace-receipt.md
 ├─ schemas/
 │  ├─ ai-search-trace-receipt.schema.json
 │  ├─ source-contribution-graph.schema.json
-│  └─ royalty-hook.schema.json
+│  ├─ royalty-hook.schema.json
+│  └─ unified-trace-receipt.schema.json
 ├─ examples/
 │  ├─ ai-search-trace-receipt.example.yaml
 │  ├─ source-contribution-graph.example.yaml
-│  └─ royalty-hook.example.yaml
+│  ├─ royalty-hook.example.yaml
+│  └─ unified-trace-receipt.example.yaml
 ├─ scripts/
 │  └─ validate_examples.py
 └─ .github/
@@ -1062,6 +1332,27 @@ Optional top-level field:
 integrity
 ```
 
+### Unified Trace Receipt Schema
+
+```text
+schemas/unified-trace-receipt.schema.json
+```
+
+The schema defines a unified receipt envelope that binds AI Search Trace Receipt, Source Contribution Graph, and Royalty Hook references while preserving module boundaries.
+
+Required top-level fields:
+
+```text
+schema_version
+unified_receipt_id
+receipt_type
+module_refs
+module_relationships
+unified_policy_boundary
+verification_status
+integrity_chain
+```
+
 ---
 
 ## Examples
@@ -1084,11 +1375,17 @@ examples/source-contribution-graph.example.yaml
 examples/royalty-hook.example.yaml
 ```
 
+### Unified Trace Receipt Example
+
+```text
+examples/unified-trace-receipt.example.yaml
+```
+
 ---
 
-## Encoded Fields in v0.4
+## Encoded Fields in v0.5
 
-The following fields represent the encoding layer in v0.4:
+The following fields represent the encoding layer in v0.5:
 
 ```text
 query_trace.intent_code
@@ -1106,6 +1403,12 @@ royalty_hook.review.review_reason
 royalty_hook.review.review_status
 royalty_hook.allowed_downstream_use
 royalty_hook.prohibited_downstream_use
+unified_trace_receipt.receipt_type
+unified_trace_receipt.module_relationships.relationship_type
+unified_trace_receipt.module_relationships.linkage_status
+unified_trace_receipt.module_relationships.event_binding.binding_method
+unified_trace_receipt.module_relationships.event_binding.binding_confidence
+unified_trace_receipt.verification_status.verification_level
 answer_trace.transformation_code
 answer_trace.confidence_bucket
 user_action_trace.action_code
@@ -1114,9 +1417,9 @@ privacy.privacy_level
 privacy.retention_policy
 ```
 
-These fields convert search, source interaction, contribution behavior, and downstream connection conditions into a structured, machine-readable format.
+These fields convert search, source interaction, contribution behavior, downstream connection conditions, and module binding states into a structured, machine-readable format.
 
-They are not intended to reconstruct the private query, full answer, raw source content, payment decision, legal attribution, or ownership status.
+They are not intended to reconstruct the private query, full answer, raw source content, payment decision, legal attribution, ownership status, or full browsing behavior.
 
 ---
 
@@ -1163,7 +1466,20 @@ raw_query_stored: false
 raw_answer_stored: false
 ```
 
-This means the standard records only minimized structural evidence and controlled connection conditions.
+Unified trace receipts require:
+
+```yaml
+raw_query_stored: false
+raw_answer_stored: false
+raw_source_content_stored: false
+personal_id_linked: false
+payment_decision_included: false
+legal_attribution_included: false
+ownership_decision_included: false
+automatic_execution_allowed: false
+```
+
+This means the standard records only minimized structural evidence, controlled connection conditions, and module bindings.
 
 It does not preserve the user’s private search text, generated answer text, raw source content, personal identity, payment decision, legal attribution decision, or ownership decision.
 
@@ -1186,8 +1502,9 @@ Which source classes were touched?
 How were sources interacted with?
 Which contribution relationships were mapped?
 Which downstream review hooks were allowed or prohibited?
-Which transformation occurred?
-Can the receipt, graph, or hook be verified later?
+Which modules were bound together?
+Were the module boundaries preserved?
+Can the receipt, graph, hook, or unified envelope be verified later?
 ```
 
 The first captures behavior.
@@ -1232,13 +1549,52 @@ Royalty Hook
   ≠ legal entitlement system
 ```
 
-This distinction is central to v0.4.
+This distinction is central to v0.4 and remains preserved in v0.5.
 
 ---
 
-## Royalty Hook vs. Legal Attribution
+## Unified Trace Receipt vs. Module Merge
 
-Royalty Hook does not make legal claims.
+Unified Trace Receipt is not a module merge.
+
+```text
+Module merge:
+  Copy all module content into one large record.
+
+Unified Trace Receipt:
+  Reference modules through identifiers and hashes.
+```
+
+The unified receipt does not absorb raw contents.
+
+It binds references.
+
+---
+
+## Unified Trace Receipt vs. Royalty Engine
+
+Unified Trace Receipt is not a royalty engine.
+
+```text
+Unified Trace Receipt
+  → may bind a Royalty Hook reference
+
+Unified Trace Receipt
+  ≠ royalty calculator
+  ≠ payment allocator
+  ≠ distribution engine
+  ≠ legal entitlement system
+```
+
+It can show that a Royalty Hook exists.
+
+It cannot execute payment.
+
+---
+
+## Legal Attribution Boundary
+
+This standard does not make legal claims.
 
 It does not decide:
 
@@ -1252,7 +1608,7 @@ It does not decide:
 * Liability
 * Public attribution requirement
 
-It only records safe connection conditions for downstream review.
+It only records minimized structural relationships, connection conditions, module bindings, and verification signals.
 
 ---
 
@@ -1268,6 +1624,7 @@ This standard may be useful for:
 * Contribution structure analysis
 * Royalty analysis preparation
 * Value-circulation review
+* Module binding verification
 * Memory and reflection systems
 * Human review workflows
 * AI governance and accountability layers
@@ -1291,6 +1648,8 @@ This standard is not intended to be:
 * A complete AI governance framework
 * A payout identity mapping system
 * An automated contract execution system
+* A module content merger
+* A raw provenance reconstruction system
 
 ---
 
@@ -1323,6 +1682,10 @@ Expected result:
   schema : schemas/royalty-hook.schema.json
   example: examples/royalty-hook.example.yaml
 [ok] Royalty Hook example is valid
+[validate] Unified Trace Receipt
+  schema : schemas/unified-trace-receipt.schema.json
+  example: examples/unified-trace-receipt.example.yaml
+[ok] Unified Trace Receipt example is valid
 ```
 
 ---
@@ -1353,15 +1716,25 @@ v0.5: Unified Trace Receipt
 
 The roadmap may evolve as the standard matures.
 
+Possible future directions may include:
+
+* Module reference profiles
+* Review workflow profiles
+* External registry references
+* Cross-receipt integrity chains
+* Optional memory or rumination hooks
+* Policy engine integration
+* Human review attestations
+
 ---
 
 ## Status
 
 This repository is currently a candidate specification.
 
-The v0.4 focus is intentionally narrow:
+The v0.5 focus is intentionally narrow:
 
-> AI search should leave a verifiable trace, including how sources were touched, how they structurally contributed to answer components, and how contribution graphs may be safely passed to value-circulation review, without becoming a record of private thought, raw source capture, automatic payment, ownership assignment, or legal attribution.
+> AI search should leave a verifiable trace, including how sources were touched, how they structurally contributed to answer components, how contribution graphs may be safely passed to value-circulation review, and how these modules are bound together, without becoming a record of private thought, raw source capture, automatic payment, ownership assignment, or legal attribution.
 
 ---
 
@@ -1396,6 +1769,8 @@ Not legal attribution machines.
 
 Not automatic payment triggers.
 
+Not boundary-collapsing module merges.
+
 This standard defines a minimal way to leave a trace:
 
 ```text
@@ -1409,9 +1784,11 @@ A value-circulation hook was exposed.
 Automatic payment was prohibited.
 Legal attribution was not decided.
 Ownership was not assigned.
+Modules were bound through identifiers and hashes.
+Module boundaries were preserved.
 An answer was generated.
 The event was minimized.
-The receipt, graph, and hook can be verified.
+The receipt, graph, hook, and unified envelope can be verified.
 The private conversation was not stored.
 The raw source content was not stored.
 ```
