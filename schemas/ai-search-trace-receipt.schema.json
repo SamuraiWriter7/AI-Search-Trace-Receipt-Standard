@@ -19,7 +19,7 @@
 "properties": {
 "schema_version": {
 "type": "string",
-"const": "0.1.0",
+"const": "0.2.0",
 "description": "The schema version of this AI Search Trace Receipt."
 },
 "trace_id": {
@@ -202,6 +202,73 @@
 }
 },
 "additionalProperties": false
+},
+"source_interactions": {
+"type": "array",
+"description": "Optional minimized records describing how sources were interacted with during the AI search event.",
+"items": {
+"type": "object",
+"required": [
+"source_fingerprint",
+"interaction_type",
+"influence_level",
+"usage_mode",
+"content_stored"
+],
+"properties": {
+"source_fingerprint": {
+"type": "string",
+"description": "A non-reversible identifier for the source involved in this interaction."
+},
+"interaction_type": {
+"type": "string",
+"description": "The type of interaction between the AI search process and the source.",
+"enum": [
+"retrieved",
+"cited",
+"summarized",
+"compared",
+"background_reference",
+"validation_reference",
+"counterpoint",
+"ignored_after_retrieval",
+"unknown"
+]
+},
+"influence_level": {
+"type": "string",
+"description": "A broad estimate of how much this source influenced the generated answer. This is not a royalty weight or legal attribution score.",
+"enum": [
+"none",
+"low",
+"medium",
+"high",
+"unknown"
+]
+},
+"usage_mode": {
+"type": "string",
+"description": "The role this source played in the answer or search process.",
+"enum": [
+"evidence",
+"context",
+"definition",
+"comparison",
+"example",
+"verification",
+"disagreement",
+"inspiration",
+"unknown"
+]
+},
+"content_stored": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. Raw source content must not be stored inside the trace receipt."
+}
+},
+"additionalProperties": false
+}
 },
 "answer_trace": {
 "type": "object",
