@@ -6,6 +6,456 @@ This project follows a candidate-version style during early specification develo
 
 ---
 
+## v0.3.0-candidate
+
+### Summary
+
+Third candidate release of the **AI Search Trace Receipt Standard**.
+
+This version introduces **Source Contribution Graph** as an independent module.
+
+Version 0.1 recorded that an AI search event occurred.
+
+Version 0.2 recorded how individual sources were interacted with.
+
+Version 0.3 records how sources, claims, summaries, and answer components are structurally related through a minimized contribution graph.
+
+The goal is to support auditability, attribution analysis, review workflows, and future value-circulation systems without defining royalty payments, ownership claims, legal attribution, or copyright compliance decisions.
+
+---
+
+### Added
+
+* Added Source Contribution Graph.
+* Added `schemas/source-contribution-graph.schema.json`.
+* Added `examples/source-contribution-graph.example.yaml`.
+* Added `docs/source-contribution-graph.md`.
+* Added modular schema design guidance.
+* Added independent validation target for Source Contribution Graph.
+* Added graph identity fields.
+* Added graph node definitions.
+* Added graph edge definitions.
+* Added contribution relation types.
+* Added contribution signal buckets.
+* Added evidence mode codes.
+* Added graph policy boundaries.
+* Added optional graph integrity metadata.
+* Added distinction between Source Contribution Graph and Royalty Hook.
+* Added distinction between Source Contribution Graph and legal attribution.
+* Added distinction between contribution structure and ownership or payment decisions.
+
+---
+
+### Modular Schema Design
+
+Starting with v0.3, larger extension layers are defined as separate schemas.
+
+The main AI Search Trace Receipt schema acts as a receipt envelope.
+
+Specialized structures such as Source Contribution Graph are validated as independent modules.
+
+This keeps the core receipt small, stable, and extensible.
+
+```text
+AI Search Trace Receipt Standard
+├─ Core receipt schema
+│  └─ schemas/ai-search-trace-receipt.schema.json
+│
+└─ Independent modules
+   └─ schemas/source-contribution-graph.schema.json
+```
+
+The design shift is:
+
+```text
+v0.1 / v0.2:
+  Extend the core receipt with optional fields.
+
+v0.3 and later:
+  Define larger structures as independent modules.
+```
+
+---
+
+### Schema
+
+Added:
+
+```text
+schemas/source-contribution-graph.schema.json
+```
+
+This schema defines a minimized graph structure for source contribution analysis.
+
+Required top-level fields:
+
+```text
+schema_version
+graph_id
+graph_type
+nodes
+edges
+graph_policy
+```
+
+Optional top-level field:
+
+```text
+integrity
+```
+
+The schema version is:
+
+```text
+0.3.0
+```
+
+---
+
+### Example
+
+Added:
+
+```text
+examples/source-contribution-graph.example.yaml
+```
+
+The example demonstrates a valid Source Contribution Graph using:
+
+* Source nodes
+* Answer component nodes
+* Claim nodes
+* Contribution edges
+* Relation types
+* Contribution signal buckets
+* Evidence modes
+* Graph policy boundaries
+* Optional integrity metadata
+
+Example fragment:
+
+```yaml
+schema_version: "0.3.0"
+graph_id: "graph_20260620_a13f"
+graph_type: "source_to_answer"
+
+nodes:
+  - node_id: "src_1"
+    node_type: "source"
+    source_fingerprint: "domain_hash:38fa91"
+    source_class_code: "official"
+
+  - node_id: "ans_1"
+    node_type: "answer_component"
+    component_type: "synthesis"
+    component_digest: "sha256:7c9e4f91a2b3c"
+
+edges:
+  - from_node: "src_1"
+    to_node: "ans_1"
+    relation_type: "supports"
+    contribution_signal: "high"
+    evidence_mode: "cited"
+
+graph_policy:
+  raw_content_stored: false
+  raw_query_stored: false
+  raw_answer_stored: false
+  royalty_decision_included: false
+  legal_attribution_included: false
+```
+
+---
+
+### Documentation
+
+Added:
+
+```text
+docs/source-contribution-graph.md
+```
+
+Updated README with:
+
+* v0.3 version status
+* Modular Schema Design section
+* Source Contribution Graph section
+* Updated repository structure
+* Updated schema list
+* Updated example list
+* Updated encoded fields list
+* Updated privacy boundary
+* Source Contribution Graph vs. Royalty Hook section
+* Source Contribution Graph vs. Legal Attribution section
+* Updated roadmap
+
+---
+
+### Validation
+
+Updated:
+
+```text
+scripts/validate_examples.py
+```
+
+Added validation target:
+
+```text
+Source Contribution Graph
+```
+
+The validation script now checks:
+
+```text
+schemas/ai-search-trace-receipt.schema.json
+examples/ai-search-trace-receipt.example.yaml
+
+schemas/source-contribution-graph.schema.json
+examples/source-contribution-graph.example.yaml
+```
+
+Expected output:
+
+```text
+[validate] AI Search Trace Receipt
+  schema : schemas/ai-search-trace-receipt.schema.json
+  example: examples/ai-search-trace-receipt.example.yaml
+[ok] AI Search Trace Receipt example is valid
+[validate] Source Contribution Graph
+  schema : schemas/source-contribution-graph.schema.json
+  example: examples/source-contribution-graph.example.yaml
+[ok] Source Contribution Graph example is valid
+```
+
+---
+
+### Node Types
+
+Added initial `node_type` values:
+
+```text
+source
+answer_component
+intermediate_summary
+claim
+unknown
+```
+
+These values describe the entities represented inside the contribution graph.
+
+---
+
+### Relation Types
+
+Added initial `relation_type` values:
+
+```text
+supports
+contextualizes
+contradicts
+defines
+compares
+summarizes
+inspires
+verifies
+unknown
+```
+
+These values describe structural relationships between graph nodes.
+
+---
+
+### Contribution Signals
+
+Added initial `contribution_signal` values:
+
+```text
+none
+low
+medium
+high
+unknown
+```
+
+Important boundary:
+
+```text
+contribution_signal is not a royalty weight.
+contribution_signal is not a payment score.
+contribution_signal is not a legal attribution score.
+```
+
+It is only a minimized structural signal.
+
+---
+
+### Evidence Modes
+
+Added initial `evidence_mode` values:
+
+```text
+cited
+summarized
+compared
+background_reference
+validation_reference
+counterpoint
+derived_from_interaction
+unknown
+```
+
+These values describe the evidence basis for a contribution edge.
+
+---
+
+### Graph Policy
+
+Added required graph policy boundaries:
+
+```yaml
+raw_content_stored: false
+raw_query_stored: false
+raw_answer_stored: false
+royalty_decision_included: false
+legal_attribution_included: false
+```
+
+These fields declare:
+
+```text
+The graph does not store raw source content.
+The graph does not store raw user queries.
+The graph does not store raw AI answers.
+The graph does not decide payment.
+The graph does not decide legal attribution.
+```
+
+---
+
+### Integrity
+
+Added optional graph integrity metadata:
+
+```yaml
+integrity:
+  graph_hash: "sha256:91bc3a7d9e"
+  previous_graph_hash: "sha256:44af09c81b"
+```
+
+This may support later graph verification without storing raw content.
+
+---
+
+### Scope
+
+This version focuses on minimized contribution structure for AI-mediated search events.
+
+It records:
+
+* Source nodes
+* Answer component nodes
+* Claim nodes
+* Intermediate summary nodes
+* Contribution edges
+* Relation types
+* Contribution signal buckets
+* Evidence modes
+* Graph policy boundaries
+* Optional graph integrity metadata
+
+It does not record:
+
+* Raw source content
+* Full URLs
+* Raw user queries
+* Raw AI answers
+* Complete browsing history
+* Personal identifiers
+* Exact behavioral timelines
+* Payment decisions
+* Legal attribution decisions
+* Ownership claims
+
+---
+
+### Excluded from v0.3
+
+This version intentionally excludes:
+
+* Royalty distribution
+* Payment allocation
+* Legal attribution
+* Copyright compliance
+* Ownership claims
+* Full provenance reconstruction
+* Model-internal attention graphs
+* Training data lineage
+* Full URL logging
+* Raw content storage
+* User-level browsing reconstruction
+* Unified trace receipts
+
+---
+
+### Relationship to Earlier Versions
+
+v0.1:
+
+```text
+Did an AI search event occur?
+```
+
+v0.2:
+
+```text
+How was each source touched?
+```
+
+v0.3:
+
+```text
+How did sources structurally contribute to answer components?
+```
+
+---
+
+### Relationship to Future Versions
+
+Source Contribution Graph may inform a future Royalty Hook.
+
+But it is not itself a royalty system.
+
+```text
+Source Contribution Graph
+  → may inform Royalty Hook
+
+Source Contribution Graph
+  ≠ Royalty Hook
+  ≠ Payment Rule
+  ≠ Legal Attribution
+```
+
+Possible future versions:
+
+```text
+v0.1: AI Search Trace Receipt
+v0.2: Source Interaction Trace
+v0.3: Source Contribution Graph
+v0.4: Royalty Hook
+v0.5: Unified Trace Receipt
+```
+
+---
+
+### Core Principle
+
+```text
+Record contribution structure.
+Do not decide ownership or payment.
+```
+
+
 ## v0.2.0-candidate
 
 ### Summary
