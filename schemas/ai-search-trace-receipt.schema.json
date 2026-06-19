@@ -1,285 +1,363 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://kazene.org/schemas/ai-search-trace-receipt.schema.json",
-  "title": "AI Search Trace Receipt",
-  "description": "A privacy-preserving trace receipt for AI-mediated search events.",
-  "type": "object",
-  "required": [
-    "schema_version",
-    "trace_id",
-    "event_type",
-    "timestamp_bucket",
-    "sampling",
-    "query_trace",
-    "source_trace",
-    "answer_trace",
-    "privacy",
-    "integrity"
-  ],
-  "properties": {
-    "schema_version": {
-      "type": "string",
-      "const": "0.1.0"
-    },
-    "trace_id": {
-      "type": "string",
-      "description": "A non-reversible identifier for this trace receipt.",
-      "minLength": 8
-    },
-    "event_type": {
-      "type": "string",
-      "const": "ai_search_trace_receipt"
-    },
-    "timestamp_bucket": {
-      "type": "string",
-      "description": "A rounded timestamp bucket. This should not be a precise behavioral timestamp."
-    },
-    "sampling": {
-      "type": "object",
-      "required": [
-        "sampled",
-        "sampling_method"
-      ],
-      "properties": {
-        "sampled": {
-          "type": "boolean"
-        },
-        "sampling_method": {
-          "type": "string",
-          "enum": [
-            "none",
-            "random",
-            "risk_based",
-            "source_based",
-            "user_opt_in",
-            "audit_required"
-          ]
-        },
-        "sampling_rate_hint": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 1
-        }
-      },
-      "additionalProperties": false
-    },
-    "query_trace": {
-      "type": "object",
-      "required": [
-        "query_fingerprint",
-        "intent_code",
-        "sensitivity_bucket"
-      ],
-      "properties": {
-        "query_fingerprint": {
-          "type": "string",
-          "description": "A privacy-preserving semantic or cryptographic fingerprint of the query."
-        },
-        "intent_code": {
-          "type": "string",
-          "enum": [
-            "general_question",
-            "news_check",
-            "technical_research",
-            "academic_research",
-            "product_comparison",
-            "legal_policy_check",
-            "medical_health_info",
-            "creative_support",
-            "code_research",
-            "unknown"
-          ]
-        },
-        "sensitivity_bucket": {
-          "type": "string",
-          "enum": [
-            "low",
-            "medium",
-            "high",
-            "restricted",
-            "unknown"
-          ]
-        }
-      },
-      "additionalProperties": false
-    },
-    "source_trace": {
-      "type": "object",
-      "required": [
-        "source_count",
-        "source_fingerprints",
-        "citation_count"
-      ],
-      "properties": {
-        "source_count": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "source_fingerprints": {
-          "type": "array",
-          "description": "Hashed or otherwise non-reversible source identifiers.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "citation_count": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "source_class_codes": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "official",
-              "documentation",
-              "academic",
-              "news",
-              "repository",
-              "blog",
-              "forum",
-              "database",
-              "unknown"
-            ]
-          }
-        }
-      },
-      "additionalProperties": false
-    },
-    "answer_trace": {
-      "type": "object",
-      "required": [
-        "answer_digest",
-        "confidence_bucket",
-        "transformation_code"
-      ],
-      "properties": {
-        "answer_digest": {
-          "type": "string",
-          "description": "A digest of the generated answer. The raw answer text must not be stored here."
-        },
-        "confidence_bucket": {
-          "type": "string",
-          "enum": [
-            "low",
-            "medium",
-            "high",
-            "unresolved"
-          ]
-        },
-        "transformation_code": {
-          "type": "string",
-          "enum": [
-            "direct_answer",
-            "summary",
-            "comparison",
-            "synthesis",
-            "translation",
-            "extraction",
-            "classification",
-            "unknown"
-          ]
-        }
-      },
-      "additionalProperties": false
-    },
-    "user_action_trace": {
-      "type": "object",
-      "properties": {
-        "action_code": {
-          "type": "string",
-          "enum": [
-            "none",
-            "clicked_source",
-            "refined_query",
-            "saved_answer",
-            "shared_answer",
-            "rejected_answer",
-            "requested_correction"
-          ]
-        }
-      },
-      "additionalProperties": false
-    },
-    "privacy": {
-      "type": "object",
-      "required": [
-        "raw_query_stored",
-        "raw_answer_stored",
-        "personal_id_linked",
-        "privacy_level",
-        "retention_policy"
-      ],
-      "properties": {
-        "raw_query_stored": {
-          "type": "boolean",
-          "const": false
-        },
-        "raw_answer_stored": {
-          "type": "boolean",
-          "const": false
-        },
-        "personal_id_linked": {
-          "type": "boolean",
-          "const": false
-        },
-        "privacy_level": {
-          "type": "string",
-          "enum": [
-            "minimized",
-            "aggregated",
-            "anonymized",
-            "review_required"
-          ]
-        },
-        "retention_policy": {
-          "type": "string",
-          "enum": [
-            "short_term",
-            "aggregated_only",
-            "delete_after_audit",
-            "unspecified"
-          ]
-        }
-      },
-      "additionalProperties": false
-    },
-    "integrity": {
-      "type": "object",
-      "required": [
-        "receipt_hash"
-      ],
-      "properties": {
-        "receipt_hash": {
-          "type": "string"
-        },
-        "previous_receipt_hash": {
-          "type": "string"
-        },
-        "signature": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false
-    },
-    "hooks": {
-      "type": "object",
-      "properties": {
-        "royalty_hook": {
-          "type": "boolean"
-        },
-        "memory_hook": {
-          "type": "boolean"
-        },
-        "rumination_hook": {
-          "type": "boolean"
-        },
-        "human_review_required": {
-          "type": "boolean"
-        }
-      },
-      "additionalProperties": false
-    }
-  },
-  "additionalProperties": false
+"$schema": "https://json-schema.org/draft/2020-12/schema",
+"$id": "https://ai-search-trace-receipt-standard.org/schemas/ai-search-trace-receipt.schema.json",
+"title": "AI Search Trace Receipt",
+"description": "A privacy-preserving trace receipt for AI-mediated search events.",
+"type": "object",
+"required": [
+"schema_version",
+"trace_id",
+"event_type",
+"timestamp_bucket",
+"sampling",
+"query_trace",
+"source_trace",
+"answer_trace",
+"privacy",
+"integrity"
+],
+"properties": {
+"schema_version": {
+"type": "string",
+"const": "0.1.0",
+"description": "The schema version of this AI Search Trace Receipt."
+},
+"trace_id": {
+"type": "string",
+"description": "A non-reversible identifier for this trace receipt.",
+"minLength": 8
+},
+"event_type": {
+"type": "string",
+"const": "ai_search_trace_receipt",
+"description": "The fixed event type for AI search trace receipts."
+},
+"timestamp_bucket": {
+"type": "string",
+"description": "A rounded timestamp bucket. This should not be a precise behavioral timestamp."
+},
+"sampling": {
+"type": "object",
+"description": "Sampling information for the search trace event.",
+"required": [
+"sampled",
+"sampling_method"
+],
+"properties": {
+"sampled": {
+"type": "boolean",
+"description": "Indicates whether this search event was sampled."
+},
+"sampling_method": {
+"type": "string",
+"description": "The sampling strategy used for this trace receipt.",
+"enum": [
+"none",
+"random",
+"risk_based",
+"source_based",
+"user_opt_in",
+"audit_required"
+]
+},
+"sampling_rate_hint": {
+"type": "number",
+"description": "Optional approximate sampling rate used by the system.",
+"minimum": 0,
+"maximum": 1
 }
+},
+"additionalProperties": false
+},
+"encoding": {
+"type": "object",
+"description": "Optional declaration of the encoding model used to convert AI search behavior into structured trace fields.",
+"required": [
+"encoding_model",
+"codebook_version",
+"binary_representation",
+"raw_signal_policy"
+],
+"properties": {
+"encoding_model": {
+"type": "string",
+"description": "The type of encoding model used for this receipt.",
+"enum": [
+"codebook_based",
+"hash_based",
+"hybrid"
+]
+},
+"codebook_version": {
+"type": "string",
+"description": "The version of the codebook used to interpret encoded fields.",
+"minLength": 1
+},
+"binary_representation": {
+"type": "string",
+"description": "Whether binary representation is explicitly defined by the standard or handled implicitly by storage and transport systems.",
+"enum": [
+"implicit",
+"explicit"
+]
+},
+"raw_signal_policy": {
+"type": "string",
+"description": "The policy for handling raw search signals before or during encoding.",
+"enum": [
+"not_stored",
+"minimized",
+"review_required"
+]
+}
+},
+"additionalProperties": false
+},
+"query_trace": {
+"type": "object",
+"description": "Minimized trace information about the query without storing the raw query.",
+"required": [
+"query_fingerprint",
+"intent_code",
+"sensitivity_bucket"
+],
+"properties": {
+"query_fingerprint": {
+"type": "string",
+"description": "A privacy-preserving semantic or cryptographic fingerprint of the query."
+},
+"intent_code": {
+"type": "string",
+"description": "Encoded broad intent category of the search event.",
+"enum": [
+"general_question",
+"news_check",
+"technical_research",
+"academic_research",
+"product_comparison",
+"legal_policy_check",
+"medical_health_info",
+"creative_support",
+"code_research",
+"unknown"
+]
+},
+"sensitivity_bucket": {
+"type": "string",
+"description": "Broad sensitivity category of the search event.",
+"enum": [
+"low",
+"medium",
+"high",
+"restricted",
+"unknown"
+]
+}
+},
+"additionalProperties": false
+},
+"source_trace": {
+"type": "object",
+"description": "Minimized trace information about sources touched during AI search.",
+"required": [
+"source_count",
+"source_fingerprints",
+"citation_count"
+],
+"properties": {
+"source_count": {
+"type": "integer",
+"description": "The number of sources touched or considered by the AI search process.",
+"minimum": 0
+},
+"source_fingerprints": {
+"type": "array",
+"description": "Hashed or otherwise non-reversible source identifiers.",
+"items": {
+"type": "string"
+}
+},
+"citation_count": {
+"type": "integer",
+"description": "The number of citations or explicit source references included in the answer.",
+"minimum": 0
+},
+"source_class_codes": {
+"type": "array",
+"description": "Encoded broad source categories touched during the search event.",
+"items": {
+"type": "string",
+"enum": [
+"official",
+"documentation",
+"academic",
+"news",
+"repository",
+"blog",
+"forum",
+"database",
+"unknown"
+]
+}
+}
+},
+"additionalProperties": false
+},
+"answer_trace": {
+"type": "object",
+"description": "Minimized trace information about the generated answer without storing the raw answer.",
+"required": [
+"answer_digest",
+"confidence_bucket",
+"transformation_code"
+],
+"properties": {
+"answer_digest": {
+"type": "string",
+"description": "A digest of the generated answer. The raw answer text must not be stored here."
+},
+"confidence_bucket": {
+"type": "string",
+"description": "Broad confidence category for the generated answer.",
+"enum": [
+"low",
+"medium",
+"high",
+"unresolved"
+]
+},
+"transformation_code": {
+"type": "string",
+"description": "Encoded description of the transformation performed by the AI.",
+"enum": [
+"direct_answer",
+"summary",
+"comparison",
+"synthesis",
+"translation",
+"extraction",
+"classification",
+"unknown"
+]
+}
+},
+"additionalProperties": false
+},
+"user_action_trace": {
+"type": "object",
+"description": "Optional minimized signal describing the user's follow-up action.",
+"properties": {
+"action_code": {
+"type": "string",
+"description": "Encoded minimized user action signal.",
+"enum": [
+"none",
+"clicked_source",
+"refined_query",
+"saved_answer",
+"shared_answer",
+"rejected_answer",
+"requested_correction"
+]
+}
+},
+"additionalProperties": false
+},
+"privacy": {
+"type": "object",
+"description": "Privacy boundary declaration for the trace receipt.",
+"required": [
+"raw_query_stored",
+"raw_answer_stored",
+"personal_id_linked",
+"privacy_level",
+"retention_policy"
+],
+"properties": {
+"raw_query_stored": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. The raw user query must not be stored in the receipt."
+},
+"raw_answer_stored": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. The raw AI answer must not be stored in the receipt."
+},
+"personal_id_linked": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. The receipt must not be directly linked to a personal identifier."
+},
+"privacy_level": {
+"type": "string",
+"description": "The privacy treatment applied to this receipt.",
+"enum": [
+"minimized",
+"aggregated",
+"anonymized",
+"review_required"
+]
+},
+"retention_policy": {
+"type": "string",
+"description": "The retention policy applied to this receipt.",
+"enum": [
+"short_term",
+"aggregated_only",
+"delete_after_audit",
+"unspecified"
+]
+}
+},
+"additionalProperties": false
+},
+"integrity": {
+"type": "object",
+"description": "Integrity metadata used to verify the trace receipt without preserving raw content.",
+"required": [
+"receipt_hash"
+],
+"properties": {
+"receipt_hash": {
+"type": "string",
+"description": "Hash of this trace receipt."
+},
+"previous_receipt_hash": {
+"type": "string",
+"description": "Optional hash of a previous receipt for chained integrity."
+},
+"signature": {
+"type": "string",
+"description": "Optional signature for receipt verification."
+}
+},
+"additionalProperties": false
+},
+"hooks": {
+"type": "object",
+"description": "Optional future integration hooks for related systems.",
+"properties": {
+"royalty_hook": {
+"type": "boolean",
+"description": "Indicates whether this receipt may be used by a future royalty or attribution system."
+},
+"memory_hook": {
+"type": "boolean",
+"description": "Indicates whether this receipt may be used by a future memory system."
+},
+"rumination_hook": {
+"type": "boolean",
+"description": "Indicates whether this receipt may be used by a future reflection or rumination system."
+},
+"human_review_required": {
+"type": "boolean",
+"description": "Indicates whether this receipt requires human review."
+}
+},
+"additionalProperties": false
+}
+},
+"additionalProperties": false
+}
+
