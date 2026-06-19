@@ -1,0 +1,61 @@
+schema_version: "0.5.0"
+unified_receipt_id: "utr_20260620_a13f"
+receipt_type: "ai_search_unified_trace"
+
+module_refs:
+  ai_search_trace_receipt:
+    trace_id: "trace_20260620_a13f"
+    receipt_hash: "sha256:abc123def456"
+    schema_version: "0.2.0"
+
+  source_contribution_graph:
+    graph_id: "graph_20260620_a13f"
+    graph_hash: "sha256:91bc3a7d9e"
+    schema_version: "0.3.0"
+
+  royalty_hook:
+    hook_id: "royalty_hook_20260620_a13f"
+    hook_hash: "sha256:7bd91ac44f"
+    schema_version: "0.4.0"
+
+module_relationships:
+  relationship_type: "search_to_contribution_to_royalty_hook"
+  linkage_status: "linked"
+
+event_binding:
+  shared_event_fingerprint: "event_hash:20260620_a13f"
+  binding_method: "hash_chain"
+  binding_confidence: "high"
+
+boundary_preservation:
+  modules_remain_separate: true
+  raw_content_not_merged: true
+  payment_not_executed: true
+  legal_attribution_not_decided: true
+  ownership_not_assigned: true
+
+unified_policy_boundary:
+  raw_query_stored: false
+  raw_answer_stored: false
+  raw_source_content_stored: false
+  personal_id_linked: false
+  payment_decision_included: false
+  legal_attribution_included: false
+  ownership_decision_included: false
+  automatic_execution_allowed: false
+
+verification_status:
+  receipt_verified: true
+  module_refs_verified: true
+  integrity_chain_verified: true
+  verification_level: "module_hashes_checked"
+  verification_notes: "Module identifiers and hashes were checked without storing raw query, answer, or source content."
+
+integrity_chain:
+  unified_receipt_hash: "sha256:utr91bc3a7d9e"
+  previous_unified_receipt_hash: "sha256:utr44af09c81b"
+  module_hashes:
+    ai_search_trace_receipt_hash: "sha256:abc123def456"
+    source_contribution_graph_hash: "sha256:91bc3a7d9e"
+    royalty_hook_hash: "sha256:7bd91ac44f"
+  chain_method: "explicit_hash_bundle"
