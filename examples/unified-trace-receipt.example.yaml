@@ -22,17 +22,17 @@ module_relationships:
   relationship_type: "search_to_contribution_to_royalty_hook"
   linkage_status: "linked"
 
-event_binding:
-  shared_event_fingerprint: "event_hash:20260620_a13f"
-  binding_method: "hash_chain"
-  binding_confidence: "high"
+  event_binding:
+    shared_event_fingerprint: "event_hash:20260620_a13f"
+    binding_method: "hash_chain"
+    binding_confidence: "high"
 
-boundary_preservation:
-  modules_remain_separate: true
-  raw_content_not_merged: true
-  payment_not_executed: true
-  legal_attribution_not_decided: true
-  ownership_not_assigned: true
+  boundary_preservation:
+    modules_remain_separate: true
+    raw_content_not_merged: true
+    payment_not_executed: true
+    legal_attribution_not_decided: true
+    ownership_not_assigned: true
 
 unified_policy_boundary:
   raw_query_stored: false
@@ -59,3 +59,4 @@ integrity_chain:
     source_contribution_graph_hash: "sha256:91bc3a7d9e"
     royalty_hook_hash: "sha256:7bd91ac44f"
   chain_method: "explicit_hash_bundle"
+
