@@ -1,0 +1,65 @@
+schema_version: "0.3.0"
+graph_id: "graph_20260620_a13f"
+graph_type: "source_to_answer"
+
+nodes:
+  - node_id: "src_1"
+    node_type: "source"
+    source_fingerprint: "domain_hash:38fa91"
+    source_class_code: "official"
+
+  - node_id: "src_2"
+    node_type: "source"
+    source_fingerprint: "repo_hash:aa72ef"
+    source_class_code: "repository"
+
+  - node_id: "src_3"
+    node_type: "source"
+    source_fingerprint: "paper_hash:7ab31f"
+    source_class_code: "academic"
+
+  - node_id: "ans_1"
+    node_type: "answer_component"
+    component_type: "synthesis"
+    component_digest: "sha256:7c9e4f91a2b3c"
+
+  - node_id: "claim_1"
+    node_type: "claim"
+    component_type: "claim"
+    component_digest: "sha256:2f4a91bc83de"
+
+edges:
+  - from_node: "src_1"
+    to_node: "ans_1"
+    relation_type: "supports"
+    contribution_signal: "high"
+    evidence_mode: "cited"
+
+  - from_node: "src_2"
+    to_node: "ans_1"
+    relation_type: "contextualizes"
+    contribution_signal: "medium"
+    evidence_mode: "background_reference"
+
+  - from_node: "src_3"
+    to_node: "claim_1"
+    relation_type: "verifies"
+    contribution_signal: "medium"
+    evidence_mode: "validation_reference"
+
+  - from_node: "claim_1"
+    to_node: "ans_1"
+    relation_type: "supports"
+    contribution_signal: "medium"
+    evidence_mode: "derived_from_interaction"
+
+graph_policy:
+  raw_content_stored: false
+  raw_query_stored: false
+  raw_answer_stored: false
+  royalty_decision_included: false
+  legal_attribution_included: false
+
+integrity:
+  graph_hash: "sha256:91bc3a7d9e"
+  previous_graph_hash: "sha256:44af09c81b"
