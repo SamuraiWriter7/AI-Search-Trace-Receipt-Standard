@@ -19,6 +19,9 @@ This standard records minimized, encoded, non-reversible signals such as:
 * Query fingerprints
 * Source fingerprints
 * Sampling flags
+* Intent codes
+* Transformation codes
+* Confidence buckets
 * Answer digests
 * User action signals
 * Privacy boundaries
@@ -31,6 +34,7 @@ It does not record:
 * Complete browsing history
 * Personally linked identifiers
 * Exact behavioral timelines
+* Sensitive private conversations
 
 The principle is simple:
 
@@ -102,9 +106,12 @@ It covers:
 * Search trace identity
 * Rounded timestamp bucket
 * Sampling decision
+* Signal extraction
+* Encoding layer
 * Query fingerprint
 * Search intent code
 * Source fingerprints
+* Source class codes
 * Citation count
 * Answer digest
 * Confidence bucket
@@ -133,12 +140,14 @@ These are reserved for later versions.
 ```text
 AI Search Event
   → Sampling Decision
-    → Query Fingerprint
-      → Source Fingerprints
-        → Answer Digest
-          → Privacy Boundary
-            → Integrity Hash
-              → Trace Receipt
+    → Signal Extraction
+      → Encoding Layer
+        → Query Fingerprint
+          → Source Fingerprints
+            → Answer Digest
+              → Privacy Boundary
+                → Integrity Hash
+                  → Trace Receipt
 ```
 
 Or, more simply:
@@ -146,12 +155,51 @@ Or, more simply:
 ```text
 Search
   → Sample
-    → Fingerprint
-      → Digest
-        → Minimize
-          → Hash
-            → Receipt
+    → Extract
+      → Encode
+        → Fingerprint
+          → Digest
+            → Minimize
+              → Hash
+                → Receipt
 ```
+
+---
+
+## Encoding Layer
+
+The encoding layer is one of the core ideas of this standard.
+
+In this standard, encoding does not merely mean that data is stored as binary digits inside a computer.
+
+The important step is to convert AI search behavior into a defined code system.
+
+For example:
+
+| Search Behavior   | Encoded Field         |
+| ----------------- | --------------------- |
+| Search intent     | `intent_code`         |
+| Source category   | `source_class_codes`  |
+| AI transformation | `transformation_code` |
+| Confidence range  | `confidence_bucket`   |
+| User reaction     | `action_code`         |
+| Sampling decision | `sampled`             |
+| Privacy status    | `privacy_level`       |
+| Retention rule    | `retention_policy`    |
+
+In other words, AI search is not fully recorded.
+
+It is:
+
+```text
+sampled
+  → classified
+    → encoded
+      → minimized
+        → preserved as a trace receipt
+```
+
+This makes the receipt machine-readable without turning it into a private thought archive.
 
 ---
 
@@ -188,7 +236,23 @@ The receipt includes a sampling section so systems can distinguish between:
 * User opt-in sampling
 * Audit-required sampling
 
-### 5. Privacy Boundary by Default
+### 5. Structured Encoding
+
+Search events should be converted into defined code fields rather than stored as raw behavioral records.
+
+Examples include:
+
+* `intent_code`
+* `source_class_codes`
+* `transformation_code`
+* `confidence_bucket`
+* `action_code`
+* `privacy_level`
+* `retention_policy`
+
+These fields are the practical expression of the encoding layer.
+
+### 6. Privacy Boundary by Default
 
 Every valid receipt must declare its privacy boundary.
 
@@ -202,7 +266,7 @@ personal_id_linked: false
 
 These fields define the boundary between a trace receipt and a surveillance log.
 
-### 6. Hash-Based Integrity
+### 7. Hash-Based Integrity
 
 Each receipt may include integrity hashes such as:
 
@@ -212,7 +276,7 @@ Each receipt may include integrity hashes such as:
 
 This allows later verification without preserving raw content.
 
-### 7. Optional Future Hooks
+### 8. Optional Future Hooks
 
 Version 0.1 includes optional hooks for future systems:
 
@@ -233,6 +297,7 @@ ai-search-trace-receipt-standard/
 ├─ CHANGELOG.md
 ├─ docs/
 │  ├─ ai-search-trace-receipt.md
+│  ├─ encoding-model.md
 │  └─ privacy-boundary.md
 ├─ schemas/
 │  └─ ai-search-trace-receipt.schema.json
@@ -274,8 +339,30 @@ Optional top-level fields:
 
 ```text
 user_action_trace
+encoding
 hooks
 ```
+
+---
+
+## Encoded Fields in v0.1
+
+The following fields represent the encoding layer in v0.1:
+
+```text
+query_trace.intent_code
+source_trace.source_class_codes
+answer_trace.transformation_code
+answer_trace.confidence_bucket
+user_action_trace.action_code
+sampling.sampled
+privacy.privacy_level
+privacy.retention_policy
+```
+
+These fields convert search behavior into a structured, machine-readable format.
+
+They are not intended to reconstruct the private query or full answer.
 
 ---
 
@@ -291,6 +378,12 @@ sampling:
   sampled: true
   sampling_method: "risk_based"
   sampling_rate_hint: 0.1
+
+encoding:
+  encoding_model: "codebook_based"
+  codebook_version: "0.1.0"
+  binary_representation: "implicit"
+  raw_signal_policy: "not_stored"
 
 query_trace:
   query_fingerprint: "simhash:ab82f91c"
@@ -371,6 +464,7 @@ A trace receipt asks:
 Did an AI search event occur,
 what minimized signals were produced,
 which source classes were touched,
+which transformation occurred,
 and can the receipt be verified later?
 ```
 
@@ -407,6 +501,7 @@ This standard is not intended to be:
 * A full attribution graph
 * A model training dataset
 * A personal profiling mechanism
+* A complete AI governance framework
 
 ---
 
@@ -500,6 +595,8 @@ This standard defines a minimal way to leave a trace:
 
 ```text
 Search happened.
+Signals were sampled.
+Behavior was encoded.
 Sources were touched.
 An answer was generated.
 The event was minimized.
