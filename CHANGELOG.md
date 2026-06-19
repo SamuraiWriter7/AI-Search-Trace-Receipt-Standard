@@ -6,6 +6,553 @@ This project follows a candidate-version style during early specification develo
 
 ---
 
+## v0.4.0-candidate
+
+### Summary
+
+Fourth candidate release of the **AI Search Trace Receipt Standard**.
+
+This version introduces **Royalty Hook** as an independent module.
+
+Version 0.1 recorded that an AI search event occurred.
+
+Version 0.2 recorded how individual sources were interacted with.
+
+Version 0.3 recorded how sources, claims, summaries, and answer components are structurally related through a minimized contribution graph.
+
+Version 0.4 records how a Source Contribution Graph may be safely passed to downstream value-circulation, attribution review, royalty analysis, or governance audit systems.
+
+The goal is to support controlled value-circulation review without calculating royalties, deciding payment, assigning ownership, or determining legal attribution.
+
+---
+
+### Added
+
+* Added Royalty Hook.
+* Added `schemas/royalty-hook.schema.json`.
+* Added `examples/royalty-hook.example.yaml`.
+* Added `docs/royalty-hook.md`.
+* Added independent validation target for Royalty Hook.
+* Added hook identity fields.
+* Added Source Contribution Graph reference fields.
+* Added eligibility signals.
+* Added review requirement and review status fields.
+* Added allowed downstream use categories.
+* Added prohibited downstream use categories.
+* Added policy boundary fields.
+* Added optional hook integrity metadata.
+* Added distinction between Royalty Hook and Royalty Engine.
+* Added distinction between Royalty Hook and legal attribution.
+* Added distinction between value-circulation review and automatic payment.
+* Updated README for v0.4.
+* Updated repository structure to include Royalty Hook schema, example, and documentation.
+
+---
+
+### Royalty Hook
+
+Royalty Hook is a safety-bounded connection layer.
+
+It connects Source Contribution Graph references to downstream review or analysis systems.
+
+It does not execute economic, legal, or ownership decisions.
+
+```text
+Royalty Hook
+  → may pass evidence to royalty analysis
+
+Royalty Hook
+  ≠ royalty calculator
+  ≠ payment allocator
+  ≠ distribution engine
+  ≠ legal entitlement system
+```
+
+Core principle:
+
+```text
+Connect to value circulation.
+Do not calculate royalties.
+```
+
+---
+
+### Schema
+
+Added:
+
+```text
+schemas/royalty-hook.schema.json
+```
+
+This schema defines a safety-bounded hook for passing contribution graph references to downstream value-circulation, attribution review, royalty analysis, or governance audit systems.
+
+Required top-level fields:
+
+```text
+schema_version
+hook_id
+hook_type
+source_graph_ref
+eligibility
+review
+allowed_downstream_use
+prohibited_downstream_use
+policy_boundary
+```
+
+Optional top-level field:
+
+```text
+integrity
+```
+
+The schema version is:
+
+```text
+0.4.0
+```
+
+---
+
+### Example
+
+Added:
+
+```text
+examples/royalty-hook.example.yaml
+```
+
+The example demonstrates a valid Royalty Hook using:
+
+* Hook identity
+* Source Contribution Graph reference
+* Eligibility signals
+* Human review requirement
+* Review reason
+* Review status
+* Allowed downstream use
+* Prohibited downstream use
+* Policy boundary
+* Optional integrity metadata
+
+Example fragment:
+
+```yaml
+schema_version: "0.4.0"
+hook_id: "royalty_hook_20260620_a13f"
+hook_type: "contribution_graph_bridge"
+
+source_graph_ref:
+  graph_id: "graph_20260620_a13f"
+  graph_hash: "sha256:91bc3a7d9e"
+  graph_schema_version: "0.3.0"
+
+eligibility:
+  eligible_for_review: true
+  eligible_for_royalty_system: true
+  eligible_for_public_attribution: false
+  confidence_level: "medium"
+
+review:
+  human_review_required: true
+  review_reason: "contribution_signal_present"
+  review_status: "pending"
+
+allowed_downstream_use:
+  - "attribution_review"
+  - "royalty_analysis"
+  - "governance_audit"
+
+prohibited_downstream_use:
+  - "automatic_payment"
+  - "legal_attribution_decision"
+  - "ownership_assignment"
+  - "automated_contract_execution"
+  - "identity_resolution"
+  - "raw_content_reconstruction"
+  - "user_profiling"
+
+policy_boundary:
+  payment_decision_included: false
+  legal_attribution_included: false
+  ownership_decision_included: false
+  automatic_execution_allowed: false
+  human_review_required_before_payment: true
+  raw_content_stored: false
+  raw_query_stored: false
+  raw_answer_stored: false
+```
+
+---
+
+### Documentation
+
+Added:
+
+```text
+docs/royalty-hook.md
+```
+
+Updated README with:
+
+* v0.4 version status
+* Royalty Hook section
+* Updated Modular Schema Design section
+* Updated repository structure
+* Updated schema list
+* Updated example list
+* Updated encoded fields list
+* Updated privacy boundary
+* Source Contribution Graph vs. Royalty Hook section
+* Royalty Hook vs. Royalty Engine section
+* Royalty Hook vs. Legal Attribution section
+* Human review before payment principle
+* Updated roadmap
+
+---
+
+### Validation
+
+Updated:
+
+```text
+scripts/validate_examples.py
+```
+
+Added validation target:
+
+```text
+Royalty Hook
+```
+
+The validation script now checks:
+
+```text
+schemas/ai-search-trace-receipt.schema.json
+examples/ai-search-trace-receipt.example.yaml
+
+schemas/source-contribution-graph.schema.json
+examples/source-contribution-graph.example.yaml
+
+schemas/royalty-hook.schema.json
+examples/royalty-hook.example.yaml
+```
+
+Expected output:
+
+```text
+[validate] AI Search Trace Receipt
+  schema : schemas/ai-search-trace-receipt.schema.json
+  example: examples/ai-search-trace-receipt.example.yaml
+[ok] AI Search Trace Receipt example is valid
+[validate] Source Contribution Graph
+  schema : schemas/source-contribution-graph.schema.json
+  example: examples/source-contribution-graph.example.yaml
+[ok] Source Contribution Graph example is valid
+[validate] Royalty Hook
+  schema : schemas/royalty-hook.schema.json
+  example: examples/royalty-hook.example.yaml
+[ok] Royalty Hook example is valid
+```
+
+---
+
+### Hook Types
+
+Added initial `hook_type` values:
+
+```text
+contribution_graph_bridge
+attribution_review_bridge
+royalty_analysis_bridge
+governance_audit_bridge
+mixed
+unknown
+```
+
+These values describe the downstream bridge represented by the hook.
+
+---
+
+### Eligibility Signals
+
+Added eligibility fields:
+
+```text
+eligible_for_review
+eligible_for_royalty_system
+eligible_for_public_attribution
+confidence_level
+```
+
+Important boundaries:
+
+```text
+eligible_for_royalty_system does not authorize payment.
+eligible_for_public_attribution does not decide public attribution.
+confidence_level is not a payment confidence score.
+```
+
+---
+
+### Review
+
+Added review fields:
+
+```text
+human_review_required
+review_reason
+review_status
+```
+
+Added initial `review_reason` values:
+
+```text
+contribution_signal_present
+public_attribution_requested
+royalty_analysis_requested
+governance_audit_required
+low_confidence
+policy_boundary_check
+unknown
+```
+
+Added initial `review_status` values:
+
+```text
+pending
+in_review
+approved_for_analysis
+rejected
+archived
+unknown
+```
+
+Important boundary:
+
+```text
+approved_for_analysis is not approval for payment.
+approved_for_analysis is not legal attribution.
+approved_for_analysis is not ownership assignment.
+```
+
+---
+
+### Allowed Downstream Use
+
+Added initial `allowed_downstream_use` values:
+
+```text
+attribution_review
+royalty_analysis
+governance_audit
+provenance_review
+public_attribution_review
+memory_review
+unknown
+```
+
+These categories allow review or analysis.
+
+They do not allow automatic execution.
+
+---
+
+### Prohibited Downstream Use
+
+Added initial `prohibited_downstream_use` values:
+
+```text
+automatic_payment
+legal_attribution_decision
+ownership_assignment
+automated_contract_execution
+identity_resolution
+raw_content_reconstruction
+user_profiling
+unknown
+```
+
+This field is central to the safety boundary of v0.4.
+
+---
+
+### Policy Boundary
+
+Added required Royalty Hook policy boundaries:
+
+```yaml
+payment_decision_included: false
+legal_attribution_included: false
+ownership_decision_included: false
+automatic_execution_allowed: false
+human_review_required_before_payment: true
+raw_content_stored: false
+raw_query_stored: false
+raw_answer_stored: false
+```
+
+These fields declare:
+
+```text
+The hook does not include a payment decision.
+The hook does not include a legal attribution decision.
+The hook does not include an ownership decision.
+The hook does not allow automatic execution.
+Human review is required before payment.
+The hook does not store raw source content.
+The hook does not store raw user queries.
+The hook does not store raw AI answers.
+```
+
+---
+
+### Integrity
+
+Added optional hook integrity metadata:
+
+```yaml
+integrity:
+  hook_hash: "sha256:7bd91ac44f"
+  source_graph_hash: "sha256:91bc3a7d9e"
+  previous_hook_hash: "sha256:3fa12bc980"
+```
+
+This may support later hook verification without storing raw content.
+
+---
+
+### Scope
+
+This version focuses on controlled downstream connection for AI-mediated search contribution structures.
+
+It records:
+
+* Royalty hook identity
+* Hook type
+* Source Contribution Graph reference
+* Eligibility for review
+* Eligibility for royalty analysis
+* Eligibility for public attribution review
+* Confidence level
+* Human review requirement
+* Review reason
+* Review status
+* Allowed downstream use
+* Prohibited downstream use
+* Policy boundary
+* Optional hook integrity metadata
+
+It does not record or decide:
+
+* Payment amount
+* Royalty percentage
+* Royalty distribution
+* Payment allocation
+* Automatic payment
+* Legal attribution
+* Copyright compliance
+* Ownership claims
+* Contract execution
+* Creator identity resolution
+* Payout identity mapping
+* Raw source content
+* Raw user queries
+* Raw AI answers
+* Full URLs
+* Complete browsing history
+
+---
+
+### Excluded from v0.4
+
+This version intentionally excludes:
+
+* Royalty calculation
+* Payment execution
+* Automatic royalty distribution
+* Legal attribution decision
+* Ownership assignment
+* Copyright compliance decision
+* Contractual entitlement
+* Payout identity mapping
+* Creator identity resolution
+* Full provenance reconstruction
+* Model-internal attention graphs
+* Training data lineage
+* Full URL logging
+* Raw content storage
+* User-level browsing reconstruction
+* Unified trace receipts
+
+---
+
+### Relationship to Earlier Versions
+
+v0.1:
+
+```text
+Did an AI search event occur?
+```
+
+v0.2:
+
+```text
+How was each source touched?
+```
+
+v0.3:
+
+```text
+How did sources structurally contribute to answer components?
+```
+
+v0.4:
+
+```text
+How may contribution evidence be safely passed to downstream value-circulation review?
+```
+
+---
+
+### Relationship to Future Versions
+
+Royalty Hook may inform future value-circulation systems.
+
+But it is not itself a royalty engine.
+
+```text
+Royalty Hook
+  → may inform Royalty OS / value-circulation review
+
+Royalty Hook
+  ≠ Royalty Engine
+  ≠ Payment Rule
+  ≠ Legal Attribution
+  ≠ Ownership Assignment
+```
+
+Possible future versions:
+
+```text
+v0.1: AI Search Trace Receipt
+v0.2: Source Interaction Trace
+v0.3: Source Contribution Graph
+v0.4: Royalty Hook
+v0.5: Unified Trace Receipt
+```
+
+---
+
+### Core Principle
+
+```text
+Connect to value circulation.
+Do not calculate royalties.
+```
+
+
 ## v0.3.0-candidate
 
 ### Summary
