@@ -18,6 +18,11 @@ VALIDATION_TARGETS = [
         "schema": ROOT / "schemas" / "source-contribution-graph.schema.json",
         "example": ROOT / "examples" / "source-contribution-graph.example.yaml",
     },
+    {
+        "name": "Royalty Hook",
+        "schema": ROOT / "schemas" / "royalty-hook.schema.json",
+        "example": ROOT / "examples" / "royalty-hook.example.yaml",
+    },
 ]
 
 
