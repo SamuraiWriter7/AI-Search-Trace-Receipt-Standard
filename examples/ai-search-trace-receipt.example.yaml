@@ -1,4 +1,4 @@
-schema_version: "0.1.0"
+schema_version: "0.2.0"
 trace_id: "trace_20260619_9f3a82"
 event_type: "ai_search_trace_receipt"
 timestamp_bucket: "2026-06-19T15:00+09:00"
