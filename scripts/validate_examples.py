@@ -5,7 +5,6 @@ import sys
 import yaml
 from jsonschema import Draft202012Validator
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 VALIDATION_TARGETS = [
@@ -13,7 +12,12 @@ VALIDATION_TARGETS = [
         "name": "AI Search Trace Receipt",
         "schema": ROOT / "schemas" / "ai-search-trace-receipt.schema.json",
         "example": ROOT / "examples" / "ai-search-trace-receipt.example.yaml",
-    }
+    },
+    {
+        "name": "Source Contribution Graph",
+        "schema": ROOT / "schemas" / "source-contribution-graph.schema.json",
+        "example": ROOT / "examples" / "source-contribution-graph.example.yaml",
+    },
 ]
 
 
