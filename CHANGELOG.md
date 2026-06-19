@@ -6,6 +6,607 @@ This project follows a candidate-version style during early specification develo
 
 ---
 
+## v0.5.0-candidate
+
+### Summary
+
+Fifth candidate release of the **AI Search Trace Receipt Standard**.
+
+This version introduces **Unified Trace Receipt** as an independent module.
+
+Version 0.1 recorded that an AI search event occurred.
+
+Version 0.2 recorded how individual sources were interacted with.
+
+Version 0.3 recorded how sources, claims, summaries, and answer components are structurally related through a minimized contribution graph.
+
+Version 0.4 recorded how a Source Contribution Graph may be safely passed to downstream value-circulation, attribution review, royalty analysis, or governance audit systems.
+
+Version 0.5 records how independently validated modules are bound together into one verifiable envelope while preserving module boundaries.
+
+The goal is to bind AI Search Trace Receipt, Source Contribution Graph, and Royalty Hook references without merging raw records, storing raw content, executing payment, deciding legal attribution, or assigning ownership.
+
+---
+
+### Added
+
+* Added Unified Trace Receipt.
+* Added `schemas/unified-trace-receipt.schema.json`.
+* Added `examples/unified-trace-receipt.example.yaml`.
+* Added `docs/unified-trace-receipt.md`.
+* Added independent validation target for Unified Trace Receipt.
+* Added unified receipt identity fields.
+* Added module reference fields.
+* Added module relationship fields.
+* Added event binding metadata.
+* Added boundary preservation declarations.
+* Added unified policy boundary fields.
+* Added verification status fields.
+* Added integrity chain metadata.
+* Added module hash bundle.
+* Added distinction between Unified Trace Receipt and module merge.
+* Added distinction between Unified Trace Receipt and surveillance logs.
+* Added distinction between Unified Trace Receipt and royalty engines.
+* Added distinction between module binding and legal attribution.
+* Updated README for v0.5.
+* Updated repository structure to include Unified Trace Receipt schema, example, and documentation.
+
+---
+
+### Unified Trace Receipt
+
+Unified Trace Receipt is a binding envelope.
+
+It binds independently validated modules through identifiers, hashes, relationships, and verification metadata.
+
+It does not merge module contents.
+
+It does not store raw query, raw answer, or raw source content.
+
+It does not execute payment.
+
+It does not decide legal attribution.
+
+It does not assign ownership.
+
+Core principle:
+
+```text
+Bind the trace modules.
+Do not collapse the boundaries.
+```
+
+---
+
+### Schema
+
+Added:
+
+```text
+schemas/unified-trace-receipt.schema.json
+```
+
+This schema defines a unified receipt envelope that binds AI Search Trace Receipt, Source Contribution Graph, and Royalty Hook references while preserving module boundaries.
+
+Required top-level fields:
+
+```text
+schema_version
+unified_receipt_id
+receipt_type
+module_refs
+module_relationships
+unified_policy_boundary
+verification_status
+integrity_chain
+```
+
+The schema version is:
+
+```text
+0.5.0
+```
+
+---
+
+### Example
+
+Added:
+
+```text
+examples/unified-trace-receipt.example.yaml
+```
+
+The example demonstrates a valid Unified Trace Receipt using:
+
+* Unified receipt identity
+* AI Search Trace Receipt reference
+* Source Contribution Graph reference
+* Royalty Hook reference
+* Module relationship metadata
+* Event binding metadata
+* Boundary preservation declarations
+* Unified policy boundary
+* Verification status
+* Integrity chain
+* Module hash bundle
+
+Example fragment:
+
+```yaml
+schema_version: "0.5.0"
+unified_receipt_id: "utr_20260620_a13f"
+receipt_type: "ai_search_unified_trace"
+
+module_refs:
+  ai_search_trace_receipt:
+    trace_id: "trace_20260620_a13f"
+    receipt_hash: "sha256:abc123def456"
+    schema_version: "0.2.0"
+
+  source_contribution_graph:
+    graph_id: "graph_20260620_a13f"
+    graph_hash: "sha256:91bc3a7d9e"
+    schema_version: "0.3.0"
+
+  royalty_hook:
+    hook_id: "royalty_hook_20260620_a13f"
+    hook_hash: "sha256:7bd91ac44f"
+    schema_version: "0.4.0"
+
+module_relationships:
+  relationship_type: "search_to_contribution_to_royalty_hook"
+  linkage_status: "linked"
+
+  event_binding:
+    shared_event_fingerprint: "event_hash:20260620_a13f"
+    binding_method: "hash_chain"
+    binding_confidence: "high"
+
+  boundary_preservation:
+    modules_remain_separate: true
+    raw_content_not_merged: true
+    payment_not_executed: true
+    legal_attribution_not_decided: true
+    ownership_not_assigned: true
+```
+
+---
+
+### Documentation
+
+Added:
+
+```text
+docs/unified-trace-receipt.md
+```
+
+Updated README with:
+
+* v0.5 version status
+* Unified Trace Receipt section
+* Updated Modular Schema Design section
+* Updated repository structure
+* Updated schema list
+* Updated example list
+* Updated encoded fields list
+* Updated privacy boundary
+* Unified Trace Receipt vs. Module Merge section
+* Unified Trace Receipt vs. Royalty Engine section
+* Updated legal attribution boundary
+* Updated roadmap
+* Updated summary
+
+---
+
+### Validation
+
+Updated:
+
+```text
+scripts/validate_examples.py
+```
+
+Added validation target:
+
+```text
+Unified Trace Receipt
+```
+
+The validation script now checks:
+
+```text
+schemas/ai-search-trace-receipt.schema.json
+examples/ai-search-trace-receipt.example.yaml
+
+schemas/source-contribution-graph.schema.json
+examples/source-contribution-graph.example.yaml
+
+schemas/royalty-hook.schema.json
+examples/royalty-hook.example.yaml
+
+schemas/unified-trace-receipt.schema.json
+examples/unified-trace-receipt.example.yaml
+```
+
+Expected output:
+
+```text
+[validate] AI Search Trace Receipt
+  schema : schemas/ai-search-trace-receipt.schema.json
+  example: examples/ai-search-trace-receipt.example.yaml
+[ok] AI Search Trace Receipt example is valid
+[validate] Source Contribution Graph
+  schema : schemas/source-contribution-graph.schema.json
+  example: examples/source-contribution-graph.example.yaml
+[ok] Source Contribution Graph example is valid
+[validate] Royalty Hook
+  schema : schemas/royalty-hook.schema.json
+  example: examples/royalty-hook.example.yaml
+[ok] Royalty Hook example is valid
+[validate] Unified Trace Receipt
+  schema : schemas/unified-trace-receipt.schema.json
+  example: examples/unified-trace-receipt.example.yaml
+[ok] Unified Trace Receipt example is valid
+```
+
+---
+
+### Fixes
+
+* Fixed YAML structure in `examples/unified-trace-receipt.example.yaml`.
+* Ensured `event_binding` is nested under `module_relationships`.
+* Ensured `boundary_preservation` is nested under `module_relationships`.
+* Preserved `additionalProperties: false` compatibility with the Unified Trace Receipt schema.
+
+---
+
+### Module References
+
+Added module reference bindings for:
+
+```text
+ai_search_trace_receipt
+source_contribution_graph
+royalty_hook
+```
+
+These references are expressed through identifiers, schema versions, and integrity hashes.
+
+The unified receipt does not copy raw module content.
+
+---
+
+### Module Relationships
+
+Added relationship metadata:
+
+```text
+relationship_type
+linkage_status
+event_binding
+boundary_preservation
+```
+
+Initial `relationship_type` values:
+
+```text
+search_to_contribution_to_royalty_hook
+search_to_contribution
+contribution_to_royalty_hook
+audit_bundle
+review_bundle
+mixed
+unknown
+```
+
+Initial `linkage_status` values:
+
+```text
+linked
+partially_linked
+pending_review
+broken
+unknown
+```
+
+---
+
+### Event Binding
+
+Added event binding metadata:
+
+```text
+shared_event_fingerprint
+binding_method
+binding_confidence
+```
+
+Initial `binding_method` values:
+
+```text
+hash_chain
+explicit_reference
+timestamp_bucket
+shared_trace_id
+mixed
+unknown
+```
+
+Initial `binding_confidence` values:
+
+```text
+low
+medium
+high
+unknown
+```
+
+Important boundary:
+
+```text
+shared_event_fingerprint must not expose raw query text, raw source content, exact browsing timelines, or personal identifiers.
+```
+
+---
+
+### Boundary Preservation
+
+Added required boundary preservation declarations:
+
+```yaml
+modules_remain_separate: true
+raw_content_not_merged: true
+payment_not_executed: true
+legal_attribution_not_decided: true
+ownership_not_assigned: true
+```
+
+These fields declare:
+
+```text
+The modules remain separate.
+Raw content is not merged.
+Payment is not executed.
+Legal attribution is not decided.
+Ownership is not assigned.
+```
+
+---
+
+### Unified Policy Boundary
+
+Added required unified policy boundaries:
+
+```yaml
+raw_query_stored: false
+raw_answer_stored: false
+raw_source_content_stored: false
+personal_id_linked: false
+payment_decision_included: false
+legal_attribution_included: false
+ownership_decision_included: false
+automatic_execution_allowed: false
+```
+
+These fields declare:
+
+```text
+The unified receipt does not store raw user queries.
+The unified receipt does not store raw AI answers.
+The unified receipt does not store raw source content.
+The unified receipt does not directly link to personal identifiers.
+The unified receipt does not include a payment decision.
+The unified receipt does not include a legal attribution decision.
+The unified receipt does not include an ownership decision.
+The unified receipt does not allow automatic execution.
+```
+
+---
+
+### Verification Status
+
+Added verification status fields:
+
+```text
+receipt_verified
+module_refs_verified
+integrity_chain_verified
+verification_level
+verification_notes
+```
+
+Initial `verification_level` values:
+
+```text
+none
+basic
+module_hashes_checked
+full_chain_checked
+human_reviewed
+unknown
+```
+
+Important boundary:
+
+```text
+verification_notes must not contain raw query, raw answer, or source content.
+```
+
+---
+
+### Integrity Chain
+
+Added integrity chain metadata:
+
+```text
+unified_receipt_hash
+previous_unified_receipt_hash
+module_hashes
+chain_method
+signature
+```
+
+Added module hash bundle fields:
+
+```text
+ai_search_trace_receipt_hash
+source_contribution_graph_hash
+royalty_hook_hash
+```
+
+Initial `chain_method` values:
+
+```text
+hash_chain
+merkle_like_summary
+explicit_hash_bundle
+signature_bundle
+mixed
+unknown
+```
+
+---
+
+### Scope
+
+This version focuses on binding independently validated trace modules into a unified, verifiable envelope.
+
+It records:
+
+* Unified receipt identity
+* Receipt type
+* Module references
+* Module relationships
+* Event binding metadata
+* Boundary preservation declarations
+* Unified policy boundary
+* Verification status
+* Integrity chain
+* Module hash bundle
+
+It does not record or decide:
+
+* Raw user query
+* Raw AI answer
+* Raw source content
+* Full URL history
+* Complete browsing history
+* Personal identity
+* Payout identity
+* Contract identity
+* Payment amount
+* Royalty percentage
+* Royalty distribution
+* Payment allocation
+* Automatic payment
+* Legal attribution
+* Copyright compliance
+* Ownership claims
+* Contract execution
+* Creator identity resolution
+* Model-internal attention graphs
+* Training data lineage
+
+---
+
+### Excluded from v0.5
+
+This version intentionally excludes:
+
+* Raw search history archive
+* Raw content capture
+* Full browsing reconstruction
+* Payment allocation
+* Automatic payment
+* Royalty calculation
+* Legal attribution
+* Copyright compliance
+* Ownership claims
+* Contract execution
+* Creator identity resolution
+* Payout identity mapping
+* Model-internal attention graphs
+* Training data lineage
+* Complete AI governance framework
+* Boundary-collapsing module merge
+
+---
+
+### Relationship to Earlier Versions
+
+v0.1:
+
+```text
+Did an AI search event occur?
+```
+
+v0.2:
+
+```text
+How was each source touched?
+```
+
+v0.3:
+
+```text
+How did sources structurally contribute to answer components?
+```
+
+v0.4:
+
+```text
+How may contribution evidence be safely passed to downstream value-circulation review?
+```
+
+v0.5:
+
+```text
+Which validated modules belong together, and were their boundaries preserved?
+```
+
+---
+
+### Relationship to Future Versions
+
+Unified Trace Receipt may support future review, registry, memory, rumination, policy, or governance workflows.
+
+But it is not itself a surveillance log, royalty engine, legal attribution system, or ownership ledger.
+
+```text
+Unified Trace Receipt
+  → may support review / registry / governance workflows
+
+Unified Trace Receipt
+  ≠ Raw Search Archive
+  ≠ Royalty Engine
+  ≠ Payment Rule
+  ≠ Legal Attribution
+  ≠ Ownership Assignment
+```
+
+Possible future directions:
+
+```text
+Module reference profiles
+Review workflow profiles
+External registry references
+Cross-receipt integrity chains
+Optional memory or rumination hooks
+Policy engine integration
+Human review attestations
+```
+
+---
+
+### Core Principle
+
+```text
+Bind the trace modules.
+Do not collapse the boundaries.
+```
+
+
 ## v0.4.0-candidate
 
 ### Summary
