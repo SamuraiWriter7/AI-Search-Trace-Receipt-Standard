@@ -31,6 +31,25 @@ source_trace:
     - "official"
     - "repository"
 
+source_interactions:
+  - source_fingerprint: "domain_hash:38fa91"
+    interaction_type: "cited"
+    influence_level: "high"
+    usage_mode: "evidence"
+    content_stored: false
+
+  - source_fingerprint: "repo_hash:aa72ef"
+    interaction_type: "background_reference"
+    influence_level: "medium"
+    usage_mode: "context"
+    content_stored: false
+
+  - source_fingerprint: "domain_hash:91cd02"
+    interaction_type: "compared"
+    influence_level: "low"
+    usage_mode: "comparison"
+    content_stored: false
+
 answer_trace:
   answer_digest: "sha256:7c9e4f91a2b3c"
   confidence_bucket: "medium"
