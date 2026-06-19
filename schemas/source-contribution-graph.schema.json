@@ -1,0 +1,234 @@
+{
+"$schema": "https://json-schema.org/draft/2020-12/schema",
+"$id": "https://ai-search-trace-receipt-standard.org/schemas/source-contribution-graph.schema.json",
+"title": "Source Contribution Graph",
+"description": "A minimized graph structure describing relationships between sources and answer components in AI-mediated search.",
+"type": "object",
+"required": [
+"schema_version",
+"graph_id",
+"graph_type",
+"nodes",
+"edges",
+"graph_policy"
+],
+"properties": {
+"schema_version": {
+"type": "string",
+"const": "0.3.0",
+"description": "The schema version of this Source Contribution Graph."
+},
+"graph_id": {
+"type": "string",
+"description": "A non-reversible identifier for this contribution graph.",
+"minLength": 8
+},
+"graph_type": {
+"type": "string",
+"description": "The broad type of contribution graph.",
+"enum": [
+"source_to_answer",
+"source_to_claim",
+"source_to_summary",
+"mixed",
+"unknown"
+]
+},
+"nodes": {
+"type": "array",
+"description": "Nodes in the contribution graph.",
+"minItems": 1,
+"items": {
+"type": "object",
+"required": [
+"node_id",
+"node_type"
+],
+"properties": {
+"node_id": {
+"type": "string",
+"description": "A local identifier for this graph node.",
+"minLength": 1
+},
+"node_type": {
+"type": "string",
+"description": "The type of node represented in the graph.",
+"enum": [
+"source",
+"answer_component",
+"intermediate_summary",
+"claim",
+"unknown"
+]
+},
+"source_fingerprint": {
+"type": "string",
+"description": "Optional non-reversible source fingerprint for source nodes."
+},
+"source_class_code": {
+"type": "string",
+"description": "Optional source class code for source nodes.",
+"enum": [
+"official",
+"documentation",
+"academic",
+"news",
+"repository",
+"blog",
+"forum",
+"database",
+"unknown"
+]
+},
+"component_type": {
+"type": "string",
+"description": "Optional answer component type for answer component nodes.",
+"enum": [
+"direct_answer",
+"summary",
+"comparison",
+"synthesis",
+"translation",
+"extraction",
+"classification",
+"claim",
+"unknown"
+]
+},
+"component_digest": {
+"type": "string",
+"description": "Optional digest of an answer component. Raw answer text must not be stored here."
+}
+},
+"additionalProperties": false
+}
+},
+"edges": {
+"type": "array",
+"description": "Edges describing contribution relationships between graph nodes.",
+"minItems": 1,
+"items": {
+"type": "object",
+"required": [
+"from_node",
+"to_node",
+"relation_type",
+"contribution_signal",
+"evidence_mode"
+],
+"properties": {
+"from_node": {
+"type": "string",
+"description": "The source node ID for this edge.",
+"minLength": 1
+},
+"to_node": {
+"type": "string",
+"description": "The target node ID for this edge.",
+"minLength": 1
+},
+"relation_type": {
+"type": "string",
+"description": "The type of contribution relationship between nodes.",
+"enum": [
+"supports",
+"contextualizes",
+"contradicts",
+"defines",
+"compares",
+"summarizes",
+"inspires",
+"verifies",
+"unknown"
+]
+},
+"contribution_signal": {
+"type": "string",
+"description": "A broad contribution signal. This is not a royalty weight, payment score, or legal attribution score.",
+"enum": [
+"none",
+"low",
+"medium",
+"high",
+"unknown"
+]
+},
+"evidence_mode": {
+"type": "string",
+"description": "The evidence basis for this contribution edge.",
+"enum": [
+"cited",
+"summarized",
+"compared",
+"background_reference",
+"validation_reference",
+"counterpoint",
+"derived_from_interaction",
+"unknown"
+]
+}
+},
+"additionalProperties": false
+}
+},
+"graph_policy": {
+"type": "object",
+"description": "Boundary policy for the contribution graph.",
+"required": [
+"raw_content_stored",
+"raw_query_stored",
+"raw_answer_stored",
+"royalty_decision_included",
+"legal_attribution_included"
+],
+"properties": {
+"raw_content_stored": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. Raw source content must not be stored inside the contribution graph."
+},
+"raw_query_stored": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. Raw user queries must not be stored inside the contribution graph."
+},
+"raw_answer_stored": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. Raw AI answers must not be stored inside the contribution graph."
+},
+"royalty_decision_included": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. Royalty decisions are outside the scope of v0.3."
+},
+"legal_attribution_included": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. Legal attribution decisions are outside the scope of v0.3."
+}
+},
+"additionalProperties": false
+},
+"integrity": {
+"type": "object",
+"description": "Optional integrity metadata for verifying the contribution graph.",
+"properties": {
+"graph_hash": {
+"type": "string",
+"description": "Hash of this contribution graph."
+},
+"previous_graph_hash": {
+"type": "string",
+"description": "Optional hash of a previous contribution graph for chained integrity."
+},
+"signature": {
+"type": "string",
+"description": "Optional signature for graph verification."
+}
+},
+"additionalProperties": false
+}
+},
+"additionalProperties": false
+}
