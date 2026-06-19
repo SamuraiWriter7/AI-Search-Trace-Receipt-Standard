@@ -6,6 +6,337 @@ This project follows a candidate-version style during early specification develo
 
 ---
 
+## v0.2.0-candidate
+
+### Summary
+
+Second candidate release of the **AI Search Trace Receipt Standard**.
+
+This version introduces **Source Interaction Trace**, a minimized layer for recording how sources were interacted with during AI-mediated search.
+
+Version 0.1 recorded that sources were touched.
+
+Version 0.2 records how sources were touched.
+
+The goal is to support auditability, attribution, future contribution analysis, and governance review without storing raw source content, full URLs, full browsing history, or user-identifying access trails.
+
+---
+
+### Added
+
+* Added Source Interaction Trace.
+* Added optional `source_interactions` field to the AI Search Trace Receipt schema.
+* Added source interaction type codes.
+* Added source influence level buckets.
+* Added source usage mode codes.
+* Added `content_stored: false` boundary for source interactions.
+* Added `docs/source-interaction-trace.md`.
+* Added v0.2 source interaction example fragments.
+* Added source interaction guidance to README.
+* Added distinction between Source Interaction Trace and Contribution Graph.
+* Added distinction between Source Interaction Trace and royalty weighting.
+* Added distinction between source interaction evidence and raw source capture.
+
+---
+
+### Schema
+
+Updated:
+
+```text
+schemas/ai-search-trace-receipt.schema.json
+```
+
+Changed schema version:
+
+```text
+0.1.0 → 0.2.0
+```
+
+Added optional top-level field:
+
+```text
+source_interactions
+```
+
+The field is optional and is not included in the top-level `required` array.
+
+This keeps Source Interaction Trace extensible while preserving compatibility for receipts that do not include interaction-level source details.
+
+---
+
+### New Optional Field
+
+Added:
+
+```yaml
+source_interactions:
+  - source_fingerprint: "domain_hash:38fa91"
+    interaction_type: "cited"
+    influence_level: "high"
+    usage_mode: "evidence"
+    content_stored: false
+```
+
+Each source interaction record requires:
+
+```text
+source_fingerprint
+interaction_type
+influence_level
+usage_mode
+content_stored
+```
+
+---
+
+### Source Interaction Types
+
+Added initial `interaction_type` values:
+
+```text
+retrieved
+cited
+summarized
+compared
+background_reference
+validation_reference
+counterpoint
+ignored_after_retrieval
+unknown
+```
+
+These values describe how the AI search process interacted with a source.
+
+---
+
+### Influence Levels
+
+Added initial `influence_level` values:
+
+```text
+none
+low
+medium
+high
+unknown
+```
+
+Important boundary:
+
+```text
+influence_level is not a royalty weight.
+influence_level is not a payment score.
+influence_level is not a legal attribution score.
+```
+
+It is only a minimized trace signal.
+
+---
+
+### Usage Modes
+
+Added initial `usage_mode` values:
+
+```text
+evidence
+context
+definition
+comparison
+example
+verification
+disagreement
+inspiration
+unknown
+```
+
+These values describe the role a source played in the search result or answer construction process.
+
+---
+
+### Source Content Boundary
+
+Added required source interaction boundary:
+
+```yaml
+content_stored: false
+```
+
+This confirms that raw source content is not stored inside the trace receipt.
+
+This extends the v0.1 privacy boundary:
+
+```yaml
+raw_query_stored: false
+raw_answer_stored: false
+personal_id_linked: false
+```
+
+Together, these declare:
+
+```text
+The query is not stored.
+The answer is not stored.
+The personal identity is not linked.
+The source content is not stored.
+```
+
+---
+
+### Documentation
+
+Added:
+
+```text
+docs/source-interaction-trace.md
+```
+
+Updated README with:
+
+* v0.2 version status
+* Source Interaction Trace overview
+* Updated core flow
+* Updated repository structure
+* Updated example receipt
+* Updated encoded fields list
+* Updated privacy boundary
+* Source Interaction Trace vs. Contribution Claim section
+* Future roadmap adjustment
+
+---
+
+### Example
+
+The v0.2 example should include `source_interactions` after `source_trace` and before `answer_trace`.
+
+Example fragment:
+
+```yaml
+source_interactions:
+  - source_fingerprint: "domain_hash:38fa91"
+    interaction_type: "cited"
+    influence_level: "high"
+    usage_mode: "evidence"
+    content_stored: false
+
+  - source_fingerprint: "repo_hash:aa72ef"
+    interaction_type: "background_reference"
+    influence_level: "medium"
+    usage_mode: "context"
+    content_stored: false
+
+  - source_fingerprint: "domain_hash:91cd02"
+    interaction_type: "compared"
+    influence_level: "low"
+    usage_mode: "comparison"
+    content_stored: false
+```
+
+---
+
+### Scope
+
+This version focuses on source interaction evidence for AI-mediated search events.
+
+It records:
+
+* That sources were touched
+* How sources were interacted with
+* Whether they were cited, summarized, compared, or used as background
+* Broad source influence level
+* Broad usage mode
+* Raw source content exclusion
+
+It does not record:
+
+* Raw source content
+* Full URLs
+* Complete browsing history
+* User-identifying access trails
+* Exact behavioral timelines
+* Private session identifiers
+
+---
+
+### Excluded from v0.2
+
+This version intentionally excludes:
+
+* Raw query storage
+* Raw answer storage
+* Raw source content storage
+* Full URL logging
+* Personal ID linkage
+* Complete browsing history
+* Exact behavioral timeline reconstruction
+* Generation trace receipts
+* Contribution graph scoring
+* Royalty weighting
+* Payment hooks
+* Legal attribution decisions
+* Copyright compliance decisions
+* Full memory integration
+* Cross-agent trace propagation
+* Unified trace receipts
+
+---
+
+### Relationship to v0.1
+
+v0.1:
+
+```text
+Which sources were touched?
+How many sources were involved?
+Were citations present?
+```
+
+v0.2:
+
+```text
+How was each source used?
+How strongly did it influence the answer?
+Was it cited, summarized, compared, or only used as background?
+Was raw source content excluded?
+```
+
+---
+
+### Relationship to Future Versions
+
+Source Interaction Trace may inform future contribution or attribution systems, but it does not define them.
+
+```text
+Source Interaction Trace
+  → may inform future Contribution Graph
+
+Source Interaction Trace
+  ≠ Contribution Graph
+  ≠ Royalty Weight
+  ≠ Legal Attribution
+```
+
+Possible future versions:
+
+```text
+v0.1: AI Search Trace Receipt
+v0.2: Source Interaction Trace
+v0.3: Source / Contribution Graph
+v0.4: Royalty Hook
+v0.5: Unified Trace Receipt
+```
+
+---
+
+### Core Principle
+
+```text
+Record how the source was touched.
+Do not record the source itself.
+```
+
+---
+
 ## v0.1.0-candidate
 
 ### Summary
@@ -341,7 +672,7 @@ Possible future versions:
 
 ```text
 v0.1: AI Search Trace Receipt
-v0.2: Generation Trace Receipt
+v0.2: Source Interaction Trace
 v0.3: Source / Contribution Graph
 v0.4: Royalty Hook
 v0.5: Unified Trace Receipt
