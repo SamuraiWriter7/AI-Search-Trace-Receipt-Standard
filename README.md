@@ -20,6 +20,7 @@ This standard records minimized, encoded, non-reversible signals such as:
 * Source fingerprints
 * Source interaction signals
 * Contribution graph signals
+* Royalty hook signals
 * Sampling flags
 * Intent codes
 * Transformation codes
@@ -40,7 +41,9 @@ It does not record:
 * Exact behavioral timelines
 * Sensitive private conversations
 * Royalty decisions
+* Payment decisions
 * Legal attribution decisions
+* Ownership assignments
 
 The principle is simple:
 
@@ -48,6 +51,7 @@ The principle is simple:
 > Record the receipt, not the private conversation.
 > Record how the source was touched, not the source itself.
 > Record contribution structure, not ownership or payment.
+> Connect to value circulation, but do not calculate royalties.
 
 ---
 
@@ -63,7 +67,7 @@ This creates a new problem:
 
 This standard answers that question by defining minimized trace receipts and modular trace structures.
 
-Instead of preserving the entire search session, it preserves only the structural evidence needed for later audit, attribution analysis, reflection, or value circulation.
+Instead of preserving the entire search session, it preserves only the structural evidence needed for later audit, attribution analysis, reflection, contribution review, or value circulation.
 
 ---
 
@@ -94,7 +98,7 @@ This separation keeps the search layer simple, testable, and independently exten
 Current candidate version:
 
 ```text
-v0.3.0-candidate
+v0.4.0-candidate
 ```
 
 Current module versions:
@@ -102,6 +106,7 @@ Current module versions:
 ```text
 AI Search Trace Receipt: 0.2.0
 Source Contribution Graph: 0.3.0
+Royalty Hook: 0.4.0
 ```
 
 ---
@@ -112,6 +117,7 @@ Source Contribution Graph: 0.3.0
 v0.1: AI Search Trace Receipt
 v0.2: Source Interaction Trace
 v0.3: Source Contribution Graph
+v0.4: Royalty Hook
 ```
 
 ### v0.1: AI Search Trace Receipt
@@ -171,6 +177,27 @@ It adds:
 
 The goal is to support contribution analysis without defining royalty payments, legal attribution, ownership claims, or copyright compliance decisions.
 
+### v0.4: Royalty Hook
+
+Version 0.4 adds **Royalty Hook** as an independent module.
+
+Version 0.3 records contribution structure.
+
+Version 0.4 records how a Source Contribution Graph may be safely passed to downstream value-circulation, attribution review, royalty analysis, or governance audit systems.
+
+It adds:
+
+* Hook identity
+* Source graph reference
+* Eligibility signals
+* Review requirement
+* Allowed downstream use
+* Prohibited downstream use
+* Policy boundary
+* Hook integrity metadata
+
+The goal is to support controlled value-circulation review without calculating royalties, deciding payment, assigning ownership, or determining legal attribution.
+
 ---
 
 ## Modular Schema Design
@@ -179,7 +206,7 @@ Starting with v0.3, larger extension layers are defined as separate schemas.
 
 The main AI Search Trace Receipt schema acts as a receipt envelope.
 
-Specialized structures such as Source Contribution Graph are validated as independent modules.
+Specialized structures such as Source Contribution Graph and Royalty Hook are validated as independent modules.
 
 This keeps the core receipt small, stable, and extensible.
 
@@ -189,18 +216,21 @@ AI Search Trace Receipt Standard
 │  └─ schemas/ai-search-trace-receipt.schema.json
 │
 ├─ Independent modules
-│  └─ schemas/source-contribution-graph.schema.json
+│  ├─ schemas/source-contribution-graph.schema.json
+│  └─ schemas/royalty-hook.schema.json
 │
 ├─ Examples
 │  ├─ examples/ai-search-trace-receipt.example.yaml
-│  └─ examples/source-contribution-graph.example.yaml
+│  ├─ examples/source-contribution-graph.example.yaml
+│  └─ examples/royalty-hook.example.yaml
 │
 └─ Documentation
    ├─ docs/ai-search-trace-receipt.md
    ├─ docs/encoding-model.md
    ├─ docs/privacy-boundary.md
    ├─ docs/source-interaction-trace.md
-   └─ docs/source-contribution-graph.md
+   ├─ docs/source-contribution-graph.md
+   └─ docs/royalty-hook.md
 ```
 
 The design shift is:
@@ -217,42 +247,48 @@ This prevents the main receipt schema from becoming too large.
 
 The receipt remains the envelope.
 
-The modules become attached structural evidence.
+The modules become attached structural evidence and controlled connection layers.
 
 ---
 
-## v0.3 Scope
+## v0.4 Scope
 
-Version 0.3 defines a modular contribution graph for AI-mediated search.
+Version 0.4 defines a Royalty Hook for AI-mediated search contribution structures.
 
 It covers:
 
-* Source contribution graph identity
-* Graph type
-* Source nodes
-* Answer component nodes
-* Claim nodes
-* Intermediate summary nodes
-* Contribution edges
-* Relation type codes
-* Contribution signal buckets
-* Evidence modes
-* Graph policy boundaries
-* Optional graph integrity metadata
+* Royalty hook identity
+* Hook type
+* Source Contribution Graph reference
+* Eligibility for review
+* Eligibility for royalty analysis
+* Eligibility for public attribution review
+* Confidence level
+* Human review requirement
+* Review reason
+* Review status
+* Allowed downstream use
+* Prohibited downstream use
+* Policy boundary
+* Optional hook integrity metadata
 
 It does not define:
 
 * Royalty distribution
 * Payment allocation
+* Automatic payment
 * Legal attribution
 * Copyright compliance
 * Ownership claims
+* Contract execution
+* Creator identity resolution
+* Payout identity mapping
 * Full provenance reconstruction
 * Model-internal attention graphs
 * Training data lineage
 * Unified trace receipts
 
-These are reserved for later versions.
+These are reserved for later versions or downstream systems.
 
 ---
 
@@ -267,10 +303,8 @@ AI Search Event
           → Source Trace
             → Source Interaction Trace
               → Source Contribution Graph
-                → Answer Digest
-                  → Privacy Boundary
-                    → Integrity Hash
-                      → Trace Receipt
+                → Royalty Hook
+                  → Human Review / Policy Engine / Royalty Analysis
 ```
 
 Or, more simply:
@@ -283,10 +317,9 @@ Search
         → Fingerprint
           → Record source interaction
             → Map contribution structure
-              → Digest
-                → Minimize
-                  → Hash
-                    → Receipt
+              → Connect to value-circulation review
+                → Preserve boundaries
+                  → Verify
 ```
 
 ---
@@ -301,22 +334,25 @@ The important step is to convert AI search behavior into a defined code system.
 
 For example:
 
-| Search Behavior       | Encoded Field         |
-| --------------------- | --------------------- |
-| Search intent         | `intent_code`         |
-| Source category       | `source_class_codes`  |
-| Source interaction    | `interaction_type`    |
-| Source influence      | `influence_level`     |
-| Source usage role     | `usage_mode`          |
-| Contribution relation | `relation_type`       |
-| Contribution signal   | `contribution_signal` |
-| Evidence basis        | `evidence_mode`       |
-| AI transformation     | `transformation_code` |
-| Confidence range      | `confidence_bucket`   |
-| User reaction         | `action_code`         |
-| Sampling decision     | `sampled`             |
-| Privacy status        | `privacy_level`       |
-| Retention rule        | `retention_policy`    |
+| Search Behavior           | Encoded Field               |
+| ------------------------- | --------------------------- |
+| Search intent             | `intent_code`               |
+| Source category           | `source_class_codes`        |
+| Source interaction        | `interaction_type`          |
+| Source influence          | `influence_level`           |
+| Source usage role         | `usage_mode`                |
+| Contribution relation     | `relation_type`             |
+| Contribution signal       | `contribution_signal`       |
+| Evidence basis            | `evidence_mode`             |
+| Downstream use category   | `allowed_downstream_use`    |
+| Prohibited downstream use | `prohibited_downstream_use` |
+| Review status             | `review_status`             |
+| AI transformation         | `transformation_code`       |
+| Confidence range          | `confidence_bucket`         |
+| User reaction             | `action_code`               |
+| Sampling decision         | `sampled`                   |
+| Privacy status            | `privacy_level`             |
+| Retention rule            | `retention_policy`          |
 
 In other words, AI search is not fully recorded.
 
@@ -327,7 +363,7 @@ sampled
   → classified
     → encoded
       → minimized
-        → preserved as a trace receipt
+        → preserved as trace evidence
 ```
 
 This makes the receipt machine-readable without turning it into a private thought archive.
@@ -561,33 +597,230 @@ This keeps the graph as structural evidence rather than content capture, payment
 
 ---
 
+## Royalty Hook
+
+Royalty Hook is the main addition in v0.4.
+
+It records how a Source Contribution Graph may be safely passed to downstream value-circulation or review systems.
+
+It is defined as an independent module:
+
+```text
+schemas/royalty-hook.schema.json
+```
+
+Royalty Hook is not a royalty engine.
+
+It does not calculate royalties.
+
+It does not decide payment.
+
+It does not assign ownership.
+
+It does not determine legal attribution.
+
+It only records safe connection conditions.
+
+Example:
+
+```yaml
+schema_version: "0.4.0"
+hook_id: "royalty_hook_20260620_a13f"
+hook_type: "contribution_graph_bridge"
+
+source_graph_ref:
+  graph_id: "graph_20260620_a13f"
+  graph_hash: "sha256:91bc3a7d9e"
+  graph_schema_version: "0.3.0"
+
+eligibility:
+  eligible_for_review: true
+  eligible_for_royalty_system: true
+  eligible_for_public_attribution: false
+  confidence_level: "medium"
+
+review:
+  human_review_required: true
+  review_reason: "contribution_signal_present"
+  review_status: "pending"
+
+allowed_downstream_use:
+  - "attribution_review"
+  - "royalty_analysis"
+  - "governance_audit"
+
+prohibited_downstream_use:
+  - "automatic_payment"
+  - "legal_attribution_decision"
+  - "ownership_assignment"
+  - "automated_contract_execution"
+  - "identity_resolution"
+  - "raw_content_reconstruction"
+  - "user_profiling"
+
+policy_boundary:
+  payment_decision_included: false
+  legal_attribution_included: false
+  ownership_decision_included: false
+  automatic_execution_allowed: false
+  human_review_required_before_payment: true
+  raw_content_stored: false
+  raw_query_stored: false
+  raw_answer_stored: false
+
+integrity:
+  hook_hash: "sha256:7bd91ac44f"
+  source_graph_hash: "sha256:91bc3a7d9e"
+  previous_hook_hash: "sha256:3fa12bc980"
+```
+
+This records:
+
+```text
+A Source Contribution Graph is referenced.
+The graph may be passed to royalty analysis.
+Human review is required.
+Automatic payment is prohibited.
+Legal attribution decisions are prohibited.
+Ownership assignment is prohibited.
+Raw content reconstruction is prohibited.
+```
+
+### Hook Types
+
+Initial `hook_type` values:
+
+```text
+contribution_graph_bridge
+attribution_review_bridge
+royalty_analysis_bridge
+governance_audit_bridge
+mixed
+unknown
+```
+
+### Eligibility Signals
+
+Royalty Hook records eligibility for:
+
+```text
+review
+royalty analysis
+public attribution review
+```
+
+Important boundaries:
+
+```text
+eligible_for_royalty_system does not authorize payment.
+eligible_for_public_attribution does not decide public attribution.
+confidence_level is not a payment confidence score.
+```
+
+### Review Status
+
+Initial `review_status` values:
+
+```text
+pending
+in_review
+approved_for_analysis
+rejected
+archived
+unknown
+```
+
+Important boundary:
+
+```text
+approved_for_analysis is not approval for payment.
+approved_for_analysis is not legal attribution.
+approved_for_analysis is not ownership assignment.
+```
+
+### Allowed Downstream Use
+
+Initial `allowed_downstream_use` values:
+
+```text
+attribution_review
+royalty_analysis
+governance_audit
+provenance_review
+public_attribution_review
+memory_review
+unknown
+```
+
+These categories allow review or analysis.
+
+They do not allow automatic execution.
+
+### Prohibited Downstream Use
+
+Initial `prohibited_downstream_use` values:
+
+```text
+automatic_payment
+legal_attribution_decision
+ownership_assignment
+automated_contract_execution
+identity_resolution
+raw_content_reconstruction
+user_profiling
+unknown
+```
+
+This field is central to the safety boundary of v0.4.
+
+### Policy Boundary
+
+Every valid Royalty Hook must declare:
+
+```yaml
+payment_decision_included: false
+legal_attribution_included: false
+ownership_decision_included: false
+automatic_execution_allowed: false
+human_review_required_before_payment: true
+raw_content_stored: false
+raw_query_stored: false
+raw_answer_stored: false
+```
+
+This keeps the hook as a safe connection layer rather than a payment engine, legal attribution system, or ownership assignment mechanism.
+
+---
+
 ## Design Principles
 
 ### 1. No Raw Query Storage
 
-The raw user query must not be stored inside the receipt.
+The raw user query must not be stored inside the receipt, contribution graph, or royalty hook.
 
 Only a non-reversible fingerprint, intent code, or minimized signal may be recorded.
 
 ### 2. No Raw Answer Storage
 
-The raw AI answer must not be stored inside the receipt or contribution graph.
+The raw AI answer must not be stored inside the receipt, contribution graph, or royalty hook.
 
 Only a digest, hash, confidence bucket, transformation code, or component digest may be recorded.
 
 ### 3. No Raw Source Content Storage
 
-Raw source content must not be stored inside the receipt or graph.
+Raw source content must not be stored inside the receipt, graph, or hook.
 
 Source Interaction Trace records how a source was touched.
 
 Source Contribution Graph records how a source structurally related to answer components.
 
-Neither records the source itself.
+Royalty Hook records how that graph may be passed downstream.
+
+None of them records the source itself.
 
 ### 4. No Personal ID Linkage
 
-Trace receipts and contribution graphs must not be directly linked to personal identifiers.
+Trace receipts, contribution graphs, and royalty hooks must not be directly linked to personal identifiers.
 
 The standard is designed for structural evidence, not behavioral surveillance.
 
@@ -618,6 +851,9 @@ Examples include:
 * `relation_type`
 * `contribution_signal`
 * `evidence_mode`
+* `allowed_downstream_use`
+* `prohibited_downstream_use`
+* `review_status`
 * `transformation_code`
 * `confidence_bucket`
 * `action_code`
@@ -654,21 +890,49 @@ royalty_decision_included: false
 legal_attribution_included: false
 ```
 
-These fields define the boundary between a trace receipt and a surveillance log.
+Royalty hooks require:
+
+```yaml
+payment_decision_included: false
+legal_attribution_included: false
+ownership_decision_included: false
+automatic_execution_allowed: false
+human_review_required_before_payment: true
+raw_content_stored: false
+raw_query_stored: false
+raw_answer_stored: false
+```
+
+These fields define the boundary between a trace system and surveillance, payment automation, or legal judgment.
 
 ### 8. Hash-Based Integrity
 
-Each receipt or graph may include integrity hashes such as:
+Each receipt, graph, or hook may include integrity hashes such as:
 
 * `receipt_hash`
 * `previous_receipt_hash`
 * `graph_hash`
 * `previous_graph_hash`
+* `hook_hash`
+* `previous_hook_hash`
 * `signature`
 
 This allows later verification without preserving raw content.
 
-### 9. Optional Future Hooks
+### 9. Human Review Before Payment
+
+Royalty Hook requires that payment-related action must not be automatic.
+
+The following boundary must hold:
+
+```yaml
+automatic_execution_allowed: false
+human_review_required_before_payment: true
+```
+
+This means downstream systems may analyze contribution evidence, but payment requires a separate review process.
+
+### 10. Optional Future Hooks
 
 The standard keeps optional hooks for future systems:
 
@@ -677,7 +941,7 @@ The standard keeps optional hooks for future systems:
 * Rumination hook
 * Human review requirement
 
-These hooks remain intentionally minimal until later versions define their semantics.
+These hooks remain intentionally bounded until later versions define their full semantics.
 
 ---
 
@@ -692,13 +956,16 @@ ai-search-trace-receipt-standard/
 │  ├─ encoding-model.md
 │  ├─ privacy-boundary.md
 │  ├─ source-interaction-trace.md
-│  └─ source-contribution-graph.md
+│  ├─ source-contribution-graph.md
+│  └─ royalty-hook.md
 ├─ schemas/
 │  ├─ ai-search-trace-receipt.schema.json
-│  └─ source-contribution-graph.schema.json
+│  ├─ source-contribution-graph.schema.json
+│  └─ royalty-hook.schema.json
 ├─ examples/
 │  ├─ ai-search-trace-receipt.example.yaml
-│  └─ source-contribution-graph.example.yaml
+│  ├─ source-contribution-graph.example.yaml
+│  └─ royalty-hook.example.yaml
 ├─ scripts/
 │  └─ validate_examples.py
 └─ .github/
@@ -767,6 +1034,34 @@ Optional top-level field:
 integrity
 ```
 
+### Royalty Hook Schema
+
+```text
+schemas/royalty-hook.schema.json
+```
+
+The schema defines a safety-bounded hook for passing contribution graph references to downstream value-circulation, attribution review, royalty analysis, or governance audit systems.
+
+Required top-level fields:
+
+```text
+schema_version
+hook_id
+hook_type
+source_graph_ref
+eligibility
+review
+allowed_downstream_use
+prohibited_downstream_use
+policy_boundary
+```
+
+Optional top-level field:
+
+```text
+integrity
+```
+
 ---
 
 ## Examples
@@ -783,11 +1078,17 @@ examples/ai-search-trace-receipt.example.yaml
 examples/source-contribution-graph.example.yaml
 ```
 
+### Royalty Hook Example
+
+```text
+examples/royalty-hook.example.yaml
+```
+
 ---
 
-## Encoded Fields in v0.3
+## Encoded Fields in v0.4
 
-The following fields represent the encoding layer in v0.3:
+The following fields represent the encoding layer in v0.4:
 
 ```text
 query_trace.intent_code
@@ -799,6 +1100,12 @@ contribution_graph.nodes.node_type
 contribution_graph.edges.relation_type
 contribution_graph.edges.contribution_signal
 contribution_graph.edges.evidence_mode
+royalty_hook.hook_type
+royalty_hook.eligibility.confidence_level
+royalty_hook.review.review_reason
+royalty_hook.review.review_status
+royalty_hook.allowed_downstream_use
+royalty_hook.prohibited_downstream_use
 answer_trace.transformation_code
 answer_trace.confidence_bucket
 user_action_trace.action_code
@@ -807,9 +1114,9 @@ privacy.privacy_level
 privacy.retention_policy
 ```
 
-These fields convert search, source interaction, and contribution behavior into a structured, machine-readable format.
+These fields convert search, source interaction, contribution behavior, and downstream connection conditions into a structured, machine-readable format.
 
-They are not intended to reconstruct the private query, full answer, raw source content, or legal ownership status.
+They are not intended to reconstruct the private query, full answer, raw source content, payment decision, legal attribution, or ownership status.
 
 ---
 
@@ -843,9 +1150,22 @@ royalty_decision_included: false
 legal_attribution_included: false
 ```
 
-This means the standard records only minimized structural evidence.
+Royalty hooks require:
 
-It does not preserve the user’s private search text, generated answer text, raw source content, personal identity, payment decision, or legal attribution decision.
+```yaml
+payment_decision_included: false
+legal_attribution_included: false
+ownership_decision_included: false
+automatic_execution_allowed: false
+human_review_required_before_payment: true
+raw_content_stored: false
+raw_query_stored: false
+raw_answer_stored: false
+```
+
+This means the standard records only minimized structural evidence and controlled connection conditions.
+
+It does not preserve the user’s private search text, generated answer text, raw source content, personal identity, payment decision, legal attribution decision, or ownership decision.
 
 ---
 
@@ -865,8 +1185,9 @@ What minimized signals were produced?
 Which source classes were touched?
 How were sources interacted with?
 Which contribution relationships were mapped?
+Which downstream review hooks were allowed or prohibited?
 Which transformation occurred?
-Can the receipt or graph be verified later?
+Can the receipt, graph, or hook be verified later?
 ```
 
 The first captures behavior.
@@ -877,27 +1198,47 @@ The second preserves structural evidence.
 
 ## Source Contribution Graph vs. Royalty Hook
 
-Source Contribution Graph may inform a future Royalty Hook.
+Source Contribution Graph records contribution structure.
 
-But it is not itself a royalty system.
+Royalty Hook records how that structure may be passed downstream.
 
 ```text
-Source Contribution Graph
-  → may inform Royalty Hook
+Source Contribution Graph:
+  Source A supported Answer Component X.
 
-Source Contribution Graph
-  ≠ Royalty Hook
-  ≠ Payment Rule
-  ≠ Legal Attribution
+Royalty Hook:
+  This contribution graph may be reviewed for royalty analysis,
+  but it must not trigger automatic payment.
 ```
 
-This distinction is central to v0.3.
+The graph maps structure.
+
+The hook controls downstream use.
 
 ---
 
-## Source Contribution Graph vs. Legal Attribution
+## Royalty Hook vs. Royalty Engine
 
-Source Contribution Graph does not make legal claims.
+Royalty Hook is not a royalty engine.
+
+```text
+Royalty Hook
+  → may pass evidence to royalty analysis
+
+Royalty Hook
+  ≠ royalty calculator
+  ≠ payment allocator
+  ≠ distribution engine
+  ≠ legal entitlement system
+```
+
+This distinction is central to v0.4.
+
+---
+
+## Royalty Hook vs. Legal Attribution
+
+Royalty Hook does not make legal claims.
 
 It does not decide:
 
@@ -909,8 +1250,9 @@ It does not decide:
 * Citation sufficiency
 * Licensing compliance
 * Liability
+* Public attribution requirement
 
-It only records minimized structural relationships that may support later review.
+It only records safe connection conditions for downstream review.
 
 ---
 
@@ -924,8 +1266,9 @@ This standard may be useful for:
 * Privacy-preserving observability
 * Source interaction evidence
 * Contribution structure analysis
+* Royalty analysis preparation
+* Value-circulation review
 * Memory and reflection systems
-* Royalty or contribution graph foundations
 * Human review workflows
 * AI governance and accountability layers
 
@@ -939,13 +1282,15 @@ This standard is not intended to be:
 * A user surveillance system
 * A replacement for consent management
 * A payment distribution engine
-* A full attribution graph
+* A royalty calculator
+* A legal attribution engine
+* A copyright compliance engine
 * A model training dataset
 * A personal profiling mechanism
+* A full attribution graph
 * A complete AI governance framework
-* A copyright compliance engine
-* A legal attribution decision system
-* A royalty allocation engine
+* A payout identity mapping system
+* An automated contract execution system
 
 ---
 
@@ -974,6 +1319,10 @@ Expected result:
   schema : schemas/source-contribution-graph.schema.json
   example: examples/source-contribution-graph.example.yaml
 [ok] Source Contribution Graph example is valid
+[validate] Royalty Hook
+  schema : schemas/royalty-hook.schema.json
+  example: examples/royalty-hook.example.yaml
+[ok] Royalty Hook example is valid
 ```
 
 ---
@@ -1010,9 +1359,9 @@ The roadmap may evolve as the standard matures.
 
 This repository is currently a candidate specification.
 
-The v0.3 focus is intentionally narrow:
+The v0.4 focus is intentionally narrow:
 
-> AI search should leave a verifiable trace, including how sources were touched and how they structurally contributed to answer components, without becoming a record of private thought, raw source capture, payment decision, or legal attribution.
+> AI search should leave a verifiable trace, including how sources were touched, how they structurally contributed to answer components, and how contribution graphs may be safely passed to value-circulation review, without becoming a record of private thought, raw source capture, automatic payment, ownership assignment, or legal attribution.
 
 ---
 
@@ -1045,6 +1394,8 @@ Not premature royalty engines.
 
 Not legal attribution machines.
 
+Not automatic payment triggers.
+
 This standard defines a minimal way to leave a trace:
 
 ```text
@@ -1054,12 +1405,15 @@ Behavior was encoded.
 Sources were touched.
 Source interactions were classified.
 Contribution relationships were mapped.
+A value-circulation hook was exposed.
+Automatic payment was prohibited.
+Legal attribution was not decided.
+Ownership was not assigned.
 An answer was generated.
 The event was minimized.
-The receipt and graph can be verified.
+The receipt, graph, and hook can be verified.
 The private conversation was not stored.
 The raw source content was not stored.
-Ownership and payment were not decided.
 ```
 
 That is the purpose of the AI Search Trace Receipt Standard.
