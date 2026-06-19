@@ -1,0 +1,51 @@
+schema_version: "0.1.0"
+trace_id: "trace_20260619_9f3a82"
+event_type: "ai_search_trace_receipt"
+timestamp_bucket: "2026-06-19T15:00+09:00"
+
+sampling:
+  sampled: true
+  sampling_method: "risk_based"
+  sampling_rate_hint: 0.1
+
+query_trace:
+  query_fingerprint: "simhash:ab82f91c"
+  intent_code: "technical_research"
+  sensitivity_bucket: "low"
+
+source_trace:
+  source_count: 5
+  source_fingerprints:
+    - "domain_hash:38fa91"
+    - "domain_hash:91cd02"
+    - "repo_hash:aa72ef"
+  citation_count: 3
+  source_class_codes:
+    - "documentation"
+    - "official"
+    - "repository"
+
+answer_trace:
+  answer_digest: "sha256:7c9e4f91a2b3c"
+  confidence_bucket: "medium"
+  transformation_code: "synthesis"
+
+user_action_trace:
+  action_code: "refined_query"
+
+privacy:
+  raw_query_stored: false
+  raw_answer_stored: false
+  personal_id_linked: false
+  privacy_level: "minimized"
+  retention_policy: "short_term"
+
+integrity:
+  receipt_hash: "sha256:91bc3a7d9e"
+  previous_receipt_hash: "sha256:44af09c81b"
+
+hooks:
+  royalty_hook: false
+  memory_hook: true
+  rumination_hook: false
+  human_review_required: false
