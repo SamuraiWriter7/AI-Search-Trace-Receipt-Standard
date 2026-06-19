@@ -4,7 +4,7 @@
 
 It is designed to record the trace of an AI search without storing the raw query, raw answer, full browsing history, raw source content, or personal identifiers.
 
-The goal is to make AI search auditable, accountable, and compatible with future attribution, memory, rumination, and royalty systems without turning search history into surveillance infrastructure.
+The goal is to make AI search auditable, accountable, and compatible with future attribution, memory, rumination, contribution analysis, and royalty systems without turning search history into surveillance infrastructure.
 
 ---
 
@@ -19,6 +19,7 @@ This standard records minimized, encoded, non-reversible signals such as:
 * Query fingerprints
 * Source fingerprints
 * Source interaction signals
+* Contribution graph signals
 * Sampling flags
 * Intent codes
 * Transformation codes
@@ -38,12 +39,15 @@ It does not record:
 * Personally linked identifiers
 * Exact behavioral timelines
 * Sensitive private conversations
+* Royalty decisions
+* Legal attribution decisions
 
 The principle is simple:
 
 > Record the trace, not the thought.
 > Record the receipt, not the private conversation.
 > Record how the source was touched, not the source itself.
+> Record contribution structure, not ownership or payment.
 
 ---
 
@@ -51,15 +55,15 @@ The principle is simple:
 
 AI-mediated search is becoming a primary interface for knowledge access.
 
-Unlike traditional search engines, AI search does not merely return links. It may summarize, transform, compare, synthesize, classify, translate, or verify information before presenting an answer.
+Unlike traditional search engines, AI search does not merely return links. It may summarize, transform, compare, synthesize, classify, translate, verify, or contextualize information before presenting an answer.
 
 This creates a new problem:
 
 > If AI search transforms information and interacts with sources, how can we later verify what happened without recording everything?
 
-This standard answers that question by defining a minimal trace receipt.
+This standard answers that question by defining minimized trace receipts and modular trace structures.
 
-Instead of preserving the entire search session, it preserves only the structural evidence needed for later audit, attribution, reflection, or value circulation.
+Instead of preserving the entire search session, it preserves only the structural evidence needed for later audit, attribution analysis, reflection, or value circulation.
 
 ---
 
@@ -90,13 +94,14 @@ This separation keeps the search layer simple, testable, and independently exten
 Current candidate version:
 
 ```text
-v0.2.0-candidate
+v0.3.0-candidate
 ```
 
-Schema version:
+Current module versions:
 
 ```text
-0.2.0
+AI Search Trace Receipt: 0.2.0
+Source Contribution Graph: 0.3.0
 ```
 
 ---
@@ -106,6 +111,7 @@ Schema version:
 ```text
 v0.1: AI Search Trace Receipt
 v0.2: Source Interaction Trace
+v0.3: Source Contribution Graph
 ```
 
 ### v0.1: AI Search Trace Receipt
@@ -144,48 +150,107 @@ It adds minimized source interaction signals such as:
 
 The goal is to support future audit, attribution, and contribution analysis without storing raw source content, full URLs, full browsing history, or user-identifying access trails.
 
+### v0.3: Source Contribution Graph
+
+Version 0.3 adds **Source Contribution Graph** as an independent module.
+
+Version 0.2 records how individual sources were interacted with.
+
+Version 0.3 records how sources relate to answer components, claims, and intermediate summaries through a minimized graph structure.
+
+It adds:
+
+* Graph identity
+* Contribution nodes
+* Contribution edges
+* Relation types
+* Contribution signal buckets
+* Evidence modes
+* Graph policy boundaries
+* Graph integrity metadata
+
+The goal is to support contribution analysis without defining royalty payments, legal attribution, ownership claims, or copyright compliance decisions.
+
 ---
 
-## v0.2 Scope
+## Modular Schema Design
 
-Version 0.2 defines the minimum structure for recording AI-mediated search events and source interactions.
+Starting with v0.3, larger extension layers are defined as separate schemas.
+
+The main AI Search Trace Receipt schema acts as a receipt envelope.
+
+Specialized structures such as Source Contribution Graph are validated as independent modules.
+
+This keeps the core receipt small, stable, and extensible.
+
+```text
+AI Search Trace Receipt Standard
+├─ Core receipt schema
+│  └─ schemas/ai-search-trace-receipt.schema.json
+│
+├─ Independent modules
+│  └─ schemas/source-contribution-graph.schema.json
+│
+├─ Examples
+│  ├─ examples/ai-search-trace-receipt.example.yaml
+│  └─ examples/source-contribution-graph.example.yaml
+│
+└─ Documentation
+   ├─ docs/ai-search-trace-receipt.md
+   ├─ docs/encoding-model.md
+   ├─ docs/privacy-boundary.md
+   ├─ docs/source-interaction-trace.md
+   └─ docs/source-contribution-graph.md
+```
+
+The design shift is:
+
+```text
+v0.1 / v0.2:
+  Extend the core receipt with optional fields.
+
+v0.3 and later:
+  Define larger structures as independent modules.
+```
+
+This prevents the main receipt schema from becoming too large.
+
+The receipt remains the envelope.
+
+The modules become attached structural evidence.
+
+---
+
+## v0.3 Scope
+
+Version 0.3 defines a modular contribution graph for AI-mediated search.
 
 It covers:
 
-* Search trace identity
-* Rounded timestamp bucket
-* Sampling decision
-* Signal extraction
-* Encoding layer
-* Query fingerprint
-* Search intent code
-* Source fingerprints
-* Source class codes
-* Source interaction trace
-* Interaction type codes
-* Influence level buckets
-* Usage mode codes
-* Citation count
-* Answer digest
-* Confidence bucket
-* Transformation code
-* User action signal
-* Privacy boundary
-* Source content storage boundary
-* Integrity hash
-* Optional future hooks
+* Source contribution graph identity
+* Graph type
+* Source nodes
+* Answer component nodes
+* Claim nodes
+* Intermediate summary nodes
+* Contribution edges
+* Relation type codes
+* Contribution signal buckets
+* Evidence modes
+* Graph policy boundaries
+* Optional graph integrity metadata
 
-It does not yet define:
+It does not define:
 
-* Generation trace receipts
-* Contribution graphs
-* Royalty weighting
-* Payment hooks
-* Full memory integration
-* Cross-agent trace propagation
+* Royalty distribution
+* Payment allocation
+* Legal attribution
+* Copyright compliance
+* Ownership claims
+* Full provenance reconstruction
+* Model-internal attention graphs
+* Training data lineage
 * Unified trace receipts
-* Legal attribution decisions
-* Copyright compliance decisions
 
 These are reserved for later versions.
 
@@ -201,10 +266,11 @@ AI Search Event
         → Query Fingerprint
           → Source Trace
             → Source Interaction Trace
-              → Answer Digest
-                → Privacy Boundary
-                  → Integrity Hash
-                    → Trace Receipt
+              → Source Contribution Graph
+                → Answer Digest
+                  → Privacy Boundary
+                    → Integrity Hash
+                      → Trace Receipt
 ```
 
 Or, more simply:
@@ -216,10 +282,11 @@ Search
       → Encode
         → Fingerprint
           → Record source interaction
-            → Digest
-              → Minimize
-                → Hash
-                  → Receipt
+            → Map contribution structure
+              → Digest
+                → Minimize
+                  → Hash
+                    → Receipt
 ```
 
 ---
@@ -234,19 +301,22 @@ The important step is to convert AI search behavior into a defined code system.
 
 For example:
 
-| Search Behavior    | Encoded Field         |
-| ------------------ | --------------------- |
-| Search intent      | `intent_code`         |
-| Source category    | `source_class_codes`  |
-| Source interaction | `interaction_type`    |
-| Source influence   | `influence_level`     |
-| Source usage role  | `usage_mode`          |
-| AI transformation  | `transformation_code` |
-| Confidence range   | `confidence_bucket`   |
-| User reaction      | `action_code`         |
-| Sampling decision  | `sampled`             |
-| Privacy status     | `privacy_level`       |
-| Retention rule     | `retention_policy`    |
+| Search Behavior       | Encoded Field         |
+| --------------------- | --------------------- |
+| Search intent         | `intent_code`         |
+| Source category       | `source_class_codes`  |
+| Source interaction    | `interaction_type`    |
+| Source influence      | `influence_level`     |
+| Source usage role     | `usage_mode`          |
+| Contribution relation | `relation_type`       |
+| Contribution signal   | `contribution_signal` |
+| Evidence basis        | `evidence_mode`       |
+| AI transformation     | `transformation_code` |
+| Confidence range      | `confidence_bucket`   |
+| User reaction         | `action_code`         |
+| Sampling decision     | `sampled`             |
+| Privacy status        | `privacy_level`       |
+| Retention rule        | `retention_policy`    |
 
 In other words, AI search is not fully recorded.
 
@@ -357,6 +427,140 @@ This confirms that raw source content is not stored inside the trace receipt.
 
 ---
 
+## Source Contribution Graph
+
+Source Contribution Graph is the main addition in v0.3.
+
+It records minimized relationships between source fingerprints, claims, summaries, and answer components.
+
+It is defined as an independent module:
+
+```text
+schemas/source-contribution-graph.schema.json
+```
+
+Example:
+
+```yaml
+schema_version: "0.3.0"
+graph_id: "graph_20260620_a13f"
+graph_type: "source_to_answer"
+
+nodes:
+  - node_id: "src_1"
+    node_type: "source"
+    source_fingerprint: "domain_hash:38fa91"
+    source_class_code: "official"
+
+  - node_id: "ans_1"
+    node_type: "answer_component"
+    component_type: "synthesis"
+    component_digest: "sha256:7c9e4f91a2b3c"
+
+edges:
+  - from_node: "src_1"
+    to_node: "ans_1"
+    relation_type: "supports"
+    contribution_signal: "high"
+    evidence_mode: "cited"
+
+graph_policy:
+  raw_content_stored: false
+  raw_query_stored: false
+  raw_answer_stored: false
+  royalty_decision_included: false
+  legal_attribution_included: false
+```
+
+This records:
+
+```text
+Source fingerprint src_1 supported answer component ans_1.
+The contribution signal was high.
+The evidence basis was citation.
+No raw source content, raw query, or raw answer was stored.
+No royalty or legal attribution decision was included.
+```
+
+### Node Types
+
+Initial `node_type` values:
+
+```text
+source
+answer_component
+intermediate_summary
+claim
+unknown
+```
+
+### Relation Types
+
+Initial `relation_type` values:
+
+```text
+supports
+contextualizes
+contradicts
+defines
+compares
+summarizes
+inspires
+verifies
+unknown
+```
+
+### Contribution Signals
+
+Initial `contribution_signal` values:
+
+```text
+none
+low
+medium
+high
+unknown
+```
+
+Important boundary:
+
+```text
+contribution_signal is not a royalty weight.
+contribution_signal is not a payment score.
+contribution_signal is not a legal attribution score.
+```
+
+### Evidence Modes
+
+Initial `evidence_mode` values:
+
+```text
+cited
+summarized
+compared
+background_reference
+validation_reference
+counterpoint
+derived_from_interaction
+unknown
+```
+
+### Graph Policy Boundary
+
+Every valid Source Contribution Graph must declare:
+
+```yaml
+raw_content_stored: false
+raw_query_stored: false
+raw_answer_stored: false
+royalty_decision_included: false
+legal_attribution_included: false
+```
+
+This keeps the graph as structural evidence rather than content capture, payment logic, or legal judgment.
+
+---
+
 ## Design Principles
 
 ### 1. No Raw Query Storage
@@ -367,19 +571,23 @@ Only a non-reversible fingerprint, intent code, or minimized signal may be recor
 
 ### 2. No Raw Answer Storage
 
-The raw AI answer must not be stored inside the receipt.
+The raw AI answer must not be stored inside the receipt or contribution graph.
 
-Only a digest, hash, confidence bucket, or transformation code may be recorded.
+Only a digest, hash, confidence bucket, transformation code, or component digest may be recorded.
 
 ### 3. No Raw Source Content Storage
 
-Raw source content must not be stored inside the receipt.
+Raw source content must not be stored inside the receipt or graph.
 
-Source Interaction Trace records how a source was touched, not the source itself.
+Source Interaction Trace records how a source was touched.
+
+Source Contribution Graph records how a source structurally related to answer components.
+
+Neither records the source itself.
 
 ### 4. No Personal ID Linkage
 
-Trace receipts must not be directly linked to personal identifiers.
+Trace receipts and contribution graphs must not be directly linked to personal identifiers.
 
 The standard is designed for structural evidence, not behavioral surveillance.
 
@@ -407,6 +615,9 @@ Examples include:
 * `interaction_type`
 * `influence_level`
 * `usage_mode`
+* `relation_type`
+* `contribution_signal`
+* `evidence_mode`
 * `transformation_code`
 * `confidence_bucket`
 * `action_code`
@@ -427,34 +638,46 @@ raw_answer_stored: false
 personal_id_linked: false
 ```
 
-In v0.2, source interactions also require:
+Source interactions require:
 
 ```yaml
 content_stored: false
+```
+
+Contribution graphs require:
+
+```yaml
+raw_content_stored: false
+raw_query_stored: false
+raw_answer_stored: false
+royalty_decision_included: false
+legal_attribution_included: false
 ```
 
 These fields define the boundary between a trace receipt and a surveillance log.
 
 ### 8. Hash-Based Integrity
 
-Each receipt may include integrity hashes such as:
+Each receipt or graph may include integrity hashes such as:
 
 * `receipt_hash`
 * `previous_receipt_hash`
+* `graph_hash`
+* `previous_graph_hash`
 * `signature`
 
 This allows later verification without preserving raw content.
 
 ### 9. Optional Future Hooks
 
-Version 0.2 keeps optional hooks for future systems:
+The standard keeps optional hooks for future systems:
 
 * Royalty hook
 * Memory hook
 * Rumination hook
 * Human review requirement
 
-These hooks remain intentionally minimal.
+These hooks remain intentionally minimal until later versions define their semantics.
 
 ---
 
@@ -468,11 +691,14 @@ ai-search-trace-receipt-standard/
 │  ├─ ai-search-trace-receipt.md
 │  ├─ encoding-model.md
 │  ├─ privacy-boundary.md
-│  └─ source-interaction-trace.md
+│  ├─ source-interaction-trace.md
+│  └─ source-contribution-graph.md
 ├─ schemas/
-│  └─ ai-search-trace-receipt.schema.json
+│  ├─ ai-search-trace-receipt.schema.json
+│  └─ source-contribution-graph.schema.json
 ├─ examples/
-│  └─ ai-search-trace-receipt.example.yaml
+│  ├─ ai-search-trace-receipt.example.yaml
+│  └─ source-contribution-graph.example.yaml
 ├─ scripts/
 │  └─ validate_examples.py
 └─ .github/
@@ -482,7 +708,9 @@ ai-search-trace-receipt-standard/
 
 ---
 
-## Main Schema
+## Schemas
+
+### AI Search Trace Receipt Schema
 
 ```text
 schemas/ai-search-trace-receipt.schema.json
@@ -514,11 +742,52 @@ user_action_trace
 hooks
 ```
 
+### Source Contribution Graph Schema
+
+```text
+schemas/source-contribution-graph.schema.json
+```
+
+The schema defines a modular graph structure for source contribution analysis.
+
+Required top-level fields:
+
+```text
+schema_version
+graph_id
+graph_type
+nodes
+edges
+graph_policy
+```
+
+Optional top-level field:
+
+```text
+integrity
+```
+
 ---
 
-## Encoded Fields in v0.2
+## Examples
 
-The following fields represent the encoding layer in v0.2:
+### AI Search Trace Receipt Example
+
+```text
+examples/ai-search-trace-receipt.example.yaml
+```
+
+### Source Contribution Graph Example
+
+```text
+examples/source-contribution-graph.example.yaml
+```
+
+---
+
+## Encoded Fields in v0.3
+
+The following fields represent the encoding layer in v0.3:
 
 ```text
 query_trace.intent_code
@@ -526,6 +795,10 @@ source_trace.source_class_codes
 source_interactions.interaction_type
 source_interactions.influence_level
 source_interactions.usage_mode
+contribution_graph.nodes.node_type
+contribution_graph.edges.relation_type
+contribution_graph.edges.contribution_signal
+contribution_graph.edges.evidence_mode
 answer_trace.transformation_code
 answer_trace.confidence_bucket
 user_action_trace.action_code
@@ -534,92 +807,9 @@ privacy.privacy_level
 privacy.retention_policy
 ```
 
-These fields convert search and source interaction behavior into a structured, machine-readable format.
+These fields convert search, source interaction, and contribution behavior into a structured, machine-readable format.
 
-They are not intended to reconstruct the private query, full answer, or raw source content.
-
----
-
-## Example Receipt
-
-```yaml
-schema_version: "0.2.0"
-trace_id: "trace_20260619_9f3a82"
-event_type: "ai_search_trace_receipt"
-timestamp_bucket: "2026-06-19T15:00+09:00"
-
-sampling:
-  sampled: true
-  sampling_method: "risk_based"
-  sampling_rate_hint: 0.1
-
-encoding:
-  encoding_model: "codebook_based"
-  codebook_version: "0.2.0"
-  binary_representation: "implicit"
-  raw_signal_policy: "not_stored"
-
-query_trace:
-  query_fingerprint: "simhash:ab82f91c"
-  intent_code: "technical_research"
-  sensitivity_bucket: "low"
-
-source_trace:
-  source_count: 5
-  source_fingerprints:
-    - "domain_hash:38fa91"
-    - "domain_hash:91cd02"
-    - "repo_hash:aa72ef"
-  citation_count: 3
-  source_class_codes:
-    - "documentation"
-    - "official"
-    - "repository"
-
-source_interactions:
-  - source_fingerprint: "domain_hash:38fa91"
-    interaction_type: "cited"
-    influence_level: "high"
-    usage_mode: "evidence"
-    content_stored: false
-
-  - source_fingerprint: "repo_hash:aa72ef"
-    interaction_type: "background_reference"
-    influence_level: "medium"
-    usage_mode: "context"
-    content_stored: false
-
-  - source_fingerprint: "domain_hash:91cd02"
-    interaction_type: "compared"
-    influence_level: "low"
-    usage_mode: "comparison"
-    content_stored: false
-
-answer_trace:
-  answer_digest: "sha256:7c9e4f91a2b3c"
-  confidence_bucket: "medium"
-  transformation_code: "synthesis"
-
-user_action_trace:
-  action_code: "refined_query"
-
-privacy:
-  raw_query_stored: false
-  raw_answer_stored: false
-  personal_id_linked: false
-  privacy_level: "minimized"
-  retention_policy: "short_term"
-
-integrity:
-  receipt_hash: "sha256:91bc3a7d9e"
-  previous_receipt_hash: "sha256:44af09c81b"
-
-hooks:
-  royalty_hook: false
-  memory_hook: true
-  rumination_hook: false
-  human_review_required: false
-```
+They are not intended to reconstruct the private query, full answer, raw source content, or legal ownership status.
 
 ---
 
@@ -643,9 +833,19 @@ Source interactions require:
 content_stored: false
 ```
 
-This means the receipt records only minimized structural evidence.
+Contribution graphs require:
 
-It does not preserve the user’s private search text, generated answer text, raw source content, or personal identity.
+```yaml
+raw_content_stored: false
+raw_query_stored: false
+raw_answer_stored: false
+royalty_decision_included: false
+legal_attribution_included: false
+```
+
+This means the standard records only minimized structural evidence.
+
+It does not preserve the user’s private search text, generated answer text, raw source content, personal identity, payment decision, or legal attribution decision.
 
 ---
 
@@ -664,8 +864,9 @@ Did an AI search event occur?
 What minimized signals were produced?
 Which source classes were touched?
 How were sources interacted with?
+Which contribution relationships were mapped?
 Which transformation occurred?
-Can the receipt be verified later?
+Can the receipt or graph be verified later?
 ```
 
 The first captures behavior.
@@ -674,29 +875,42 @@ The second preserves structural evidence.
 
 ---
 
-## Source Interaction Trace vs. Contribution Claim
+## Source Contribution Graph vs. Royalty Hook
 
-Source Interaction Trace is not the same as a contribution claim.
+Source Contribution Graph may inform a future Royalty Hook.
+
+But it is not itself a royalty system.
+
+```text
+Source Contribution Graph
+  → may inform Royalty Hook
+
+Source Contribution Graph
+  ≠ Royalty Hook
+  ≠ Payment Rule
+  ≠ Legal Attribution
+```
+
+This distinction is central to v0.3.
+
+---
+
+## Source Contribution Graph vs. Legal Attribution
+
+Source Contribution Graph does not make legal claims.
 
 It does not decide:
 
-* Who should be paid
-* How much influence should count
-* Whether a source legally contributed to the final answer
-* Whether a source should receive attribution
-* Whether copyright-relevant use occurred
+* Authorship
+* Copyright status
+* Ownership
+* Derivative-work status
+* Fair use
+* Citation sufficiency
+* Licensing compliance
+* Liability
 
-It only records a minimized signal that may support future review.
-
-```text
-Source Interaction Trace
-  → may inform future Contribution Graph
-
-Source Interaction Trace
-  ≠ Contribution Graph
-  ≠ Royalty Weight
-  ≠ Legal Attribution
-```
+It only records minimized structural relationships that may support later review.
 
 ---
 
@@ -709,6 +923,7 @@ This standard may be useful for:
 * Search quality review
 * Privacy-preserving observability
 * Source interaction evidence
+* Contribution structure analysis
 * Memory and reflection systems
 * Royalty or contribution graph foundations
 * Human review workflows
@@ -730,6 +945,7 @@ This standard is not intended to be:
 * A complete AI governance framework
 * A copyright compliance engine
 * A legal attribution decision system
+* A royalty allocation engine
 
 ---
 
@@ -754,6 +970,10 @@ Expected result:
   schema : schemas/ai-search-trace-receipt.schema.json
   example: examples/ai-search-trace-receipt.example.yaml
 [ok] AI Search Trace Receipt example is valid
+[validate] Source Contribution Graph
+  schema : schemas/source-contribution-graph.schema.json
+  example: examples/source-contribution-graph.example.yaml
+[ok] Source Contribution Graph example is valid
 ```
 
 ---
@@ -777,7 +997,7 @@ Possible future versions:
 ```text
 v0.1: AI Search Trace Receipt
 v0.2: Source Interaction Trace
-v0.3: Source / Contribution Graph
+v0.3: Source Contribution Graph
 v0.4: Royalty Hook
 v0.5: Unified Trace Receipt
 ```
@@ -790,9 +1010,9 @@ The roadmap may evolve as the standard matures.
 
 This repository is currently a candidate specification.
 
-The v0.2 focus is intentionally narrow:
+The v0.3 focus is intentionally narrow:
 
-> AI search should leave a verifiable trace, including how sources were touched, without becoming a record of private thought or raw source capture.
+> AI search should leave a verifiable trace, including how sources were touched and how they structurally contributed to answer components, without becoming a record of private thought, raw source capture, payment decision, or legal attribution.
 
 ---
 
@@ -821,6 +1041,10 @@ Not private thought archives.
 
 Not raw source captures.
 
+Not premature royalty engines.
+
+Not legal attribution machines.
+
 This standard defines a minimal way to leave a trace:
 
 ```text
@@ -829,11 +1053,13 @@ Signals were sampled.
 Behavior was encoded.
 Sources were touched.
 Source interactions were classified.
+Contribution relationships were mapped.
 An answer was generated.
 The event was minimized.
-The receipt can be verified.
+The receipt and graph can be verified.
 The private conversation was not stored.
 The raw source content was not stored.
+Ownership and payment were not decided.
 ```
 
 That is the purpose of the AI Search Trace Receipt Standard.
