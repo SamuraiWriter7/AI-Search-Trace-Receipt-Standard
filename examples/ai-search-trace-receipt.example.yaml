@@ -8,6 +8,12 @@ sampling:
   sampling_method: "risk_based"
   sampling_rate_hint: 0.1
 
+encoding:
+  encoding_model: "codebook_based"
+  codebook_version: "0.1.0"
+  binary_representation: "implicit"
+  raw_signal_policy: "not_stored"
+  
 query_trace:
   query_fingerprint: "simhash:ab82f91c"
   intent_code: "technical_research"
