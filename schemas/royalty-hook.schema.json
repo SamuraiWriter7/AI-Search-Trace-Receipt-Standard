@@ -1,0 +1,261 @@
+{
+"$schema": "https://json-schema.org/draft/2020-12/schema",
+"$id": "https://ai-search-trace-receipt-standard.org/schemas/royalty-hook.schema.json",
+"title": "Royalty Hook",
+"description": "A safety-bounded hook for passing contribution graph references to downstream value-circulation, attribution review, royalty analysis, or governance audit systems without deciding payment, ownership, or legal attribution.",
+"type": "object",
+"required": [
+"schema_version",
+"hook_id",
+"hook_type",
+"source_graph_ref",
+"eligibility",
+"review",
+"allowed_downstream_use",
+"prohibited_downstream_use",
+"policy_boundary"
+],
+"properties": {
+"schema_version": {
+"type": "string",
+"const": "0.4.0",
+"description": "The schema version of this Royalty Hook."
+},
+"hook_id": {
+"type": "string",
+"description": "A non-reversible identifier for this royalty hook.",
+"minLength": 8
+},
+"hook_type": {
+"type": "string",
+"description": "The type of downstream bridge represented by this hook.",
+"enum": [
+"contribution_graph_bridge",
+"attribution_review_bridge",
+"royalty_analysis_bridge",
+"governance_audit_bridge",
+"mixed",
+"unknown"
+]
+},
+"source_graph_ref": {
+"type": "object",
+"description": "Reference to the Source Contribution Graph that this hook is attached to.",
+"required": [
+"graph_id",
+"graph_hash"
+],
+"properties": {
+"graph_id": {
+"type": "string",
+"description": "Identifier of the referenced Source Contribution Graph.",
+"minLength": 8
+},
+"graph_hash": {
+"type": "string",
+"description": "Integrity hash of the referenced Source Contribution Graph.",
+"minLength": 8
+},
+"graph_schema_version": {
+"type": "string",
+"description": "Optional schema version of the referenced Source Contribution Graph."
+}
+},
+"additionalProperties": false
+},
+"eligibility": {
+"type": "object",
+"description": "Eligibility signals describing whether the referenced contribution graph may be passed to downstream review or analysis systems.",
+"required": [
+"eligible_for_review",
+"eligible_for_royalty_system",
+"eligible_for_public_attribution",
+"confidence_level"
+],
+"properties": {
+"eligible_for_review": {
+"type": "boolean",
+"description": "Whether this hook is eligible for human or governance review."
+},
+"eligible_for_royalty_system": {
+"type": "boolean",
+"description": "Whether this hook may be passed to a downstream royalty analysis system. This does not authorize payment."
+},
+"eligible_for_public_attribution": {
+"type": "boolean",
+"description": "Whether this hook may be considered for public attribution review. This does not decide public attribution."
+},
+"confidence_level": {
+"type": "string",
+"description": "Broad confidence level for the hook eligibility signals.",
+"enum": [
+"low",
+"medium",
+"high",
+"unknown"
+]
+}
+},
+"additionalProperties": false
+},
+"review": {
+"type": "object",
+"description": "Review status and review requirement for this hook.",
+"required": [
+"human_review_required",
+"review_reason",
+"review_status"
+],
+"properties": {
+"human_review_required": {
+"type": "boolean",
+"description": "Whether human review is required before downstream action."
+},
+"review_reason": {
+"type": "string",
+"description": "Reason why review is required or recommended.",
+"enum": [
+"contribution_signal_present",
+"public_attribution_requested",
+"royalty_analysis_requested",
+"governance_audit_required",
+"low_confidence",
+"policy_boundary_check",
+"unknown"
+]
+},
+"review_status": {
+"type": "string",
+"description": "Current review status of the hook.",
+"enum": [
+"pending",
+"in_review",
+"approved_for_analysis",
+"rejected",
+"archived",
+"unknown"
+]
+}
+},
+"additionalProperties": false
+},
+"allowed_downstream_use": {
+"type": "array",
+"description": "Allowed downstream use categories for this hook. These categories do not authorize automatic payment or legal attribution.",
+"minItems": 1,
+"uniqueItems": true,
+"items": {
+"type": "string",
+"enum": [
+"attribution_review",
+"royalty_analysis",
+"governance_audit",
+"provenance_review",
+"public_attribution_review",
+"memory_review",
+"unknown"
+]
+}
+},
+"prohibited_downstream_use": {
+"type": "array",
+"description": "Explicitly prohibited downstream uses for this hook.",
+"minItems": 1,
+"uniqueItems": true,
+"items": {
+"type": "string",
+"enum": [
+"automatic_payment",
+"legal_attribution_decision",
+"ownership_assignment",
+"automated_contract_execution",
+"identity_resolution",
+"raw_content_reconstruction",
+"user_profiling",
+"unknown"
+]
+}
+},
+"policy_boundary": {
+"type": "object",
+"description": "Safety and scope boundary for this Royalty Hook.",
+"required": [
+"payment_decision_included",
+"legal_attribution_included",
+"ownership_decision_included",
+"automatic_execution_allowed",
+"human_review_required_before_payment",
+"raw_content_stored",
+"raw_query_stored",
+"raw_answer_stored"
+],
+"properties": {
+"payment_decision_included": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. This hook must not include a payment decision."
+},
+"legal_attribution_included": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. This hook must not include a legal attribution decision."
+},
+"ownership_decision_included": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. This hook must not include an ownership decision."
+},
+"automatic_execution_allowed": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. This hook must not authorize automatic payment, attribution, contract execution, or ownership assignment."
+},
+"human_review_required_before_payment": {
+"type": "boolean",
+"const": true,
+"description": "Must be true. Any payment decision requires a separate downstream process with human or policy review."
+},
+"raw_content_stored": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. Raw source content must not be stored inside the hook."
+},
+"raw_query_stored": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. Raw user queries must not be stored inside the hook."
+},
+"raw_answer_stored": {
+"type": "boolean",
+"const": false,
+"description": "Must be false. Raw AI answers must not be stored inside the hook."
+}
+},
+"additionalProperties": false
+},
+"integrity": {
+"type": "object",
+"description": "Optional integrity metadata for verifying the Royalty Hook and its relationship to the source graph.",
+"properties": {
+"hook_hash": {
+"type": "string",
+"description": "Hash of this Royalty Hook."
+},
+"source_graph_hash": {
+"type": "string",
+"description": "Hash of the referenced Source Contribution Graph."
+},
+"previous_hook_hash": {
+"type": "string",
+"description": "Optional hash of a previous Royalty Hook for chained integrity."
+},
+"signature": {
+"type": "string",
+"description": "Optional signature for hook verification."
+}
+},
+"additionalProperties": false
+}
+},
+"additionalProperties": false
+}
