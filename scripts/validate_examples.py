@@ -23,6 +23,11 @@ VALIDATION_TARGETS = [
         "schema": ROOT / "schemas" / "royalty-hook.schema.json",
         "example": ROOT / "examples" / "royalty-hook.example.yaml",
     },
+    {
+        "name": "Unified Trace Receipt",
+        "schema": ROOT / "schemas" / "unified-trace-receipt.schema.json",
+        "example": ROOT / "examples" / "unified-trace-receipt.example.yaml",
+    },
 ]
 
 
@@ -75,3 +80,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
